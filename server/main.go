@@ -31,6 +31,7 @@ func main() {
 	// Setup routes
 	http.HandleFunc("/api/auth/signup", corsMiddleware(signupHandler))
 	http.HandleFunc("/api/auth/login", corsMiddleware(loginHandler))
+	http.HandleFunc("/api/auth/temporary", corsMiddleware(temporaryUserHandler))
 	http.HandleFunc("/api/profile", corsMiddleware(authMiddleware(getProfileHandler)))
 
 	// Handle preflight requests

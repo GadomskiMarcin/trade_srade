@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -31,6 +32,10 @@ type Response struct {
 	Error   string      `json:"error,omitempty"`
 	Token   string      `json:"token,omitempty"`
 	User    interface{} `json:"user,omitempty"`
+}
+
+type TemporaryUserRequest struct {
+	Name string `json:"name"`
 }
 
 func signupHandler(w http.ResponseWriter, r *http.Request) {
@@ -149,6 +154,62 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 			"name":  user.Name,
 		},
 	}, http.StatusOK)
+}
+
+func temporaryUserHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var req TemporaryUserRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		respondWithError(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	// Validate input
+	if req.Name == "" {
+		respondWithError(w, "Name is required", http.StatusBadRequest)
+		return
+	}
+
+	// Generate a unique temporary email
+	tempEmail := fmt.Sprintf("temp_%d@temporary.local", time.Now().UnixNano())
+
+	// Create temporary user with a random password
+	randomPassword := fmt.Sprintf("temp_%d", time.Now().UnixNano())
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(randomPassword), bcrypt.DefaultCost)
+	if err != nil {
+		respondWithError(w, "Error hashing password", http.StatusInternalServerError)
+		return
+	}
+
+	// Insert temporary user
+	var userID int
+	err = db.QueryRow("INSERT INTO users (email, password, name) VALUES ($1, $2, $3) RETURNING id", 
+		tempEmail, string(hashedPassword), req.Name).Scan(&userID)
+	if err != nil {
+		respondWithError(w, "Error creating temporary user", http.StatusInternalServerError)
+		return
+	}
+
+	// Generate JWT token
+	token, err := generateToken(userID, tempEmail)
+	if err != nil {
+		respondWithError(w, "Error generating token", http.StatusInternalServerError)
+		return
+	}
+
+	respondWithJSON(w, Response{
+		Message: "Temporary user created successfully",
+		Token:   token,
+		User: map[string]interface{}{
+			"id":    userID,
+			"email": tempEmail,
+			"name":  req.Name,
+		},
+	}, http.StatusCreated)
 }
 
 func generateToken(userID int, email string) (string, error) {

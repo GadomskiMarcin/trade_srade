@@ -88,7 +88,7 @@ trap fail ERR
 
   # Clean up docker-compose
   echo -e "${BLUE}Cleaning up docker-compose...${NC}"
-  $DC down -v --remove-orphans 2>/dev/null || echo -e "${YELLOW}No docker-compose project to clean${NC}"
+  $DC -f docker-compose.dev.yml down -v --remove-orphans 2>/dev/null || echo -e "${YELLOW}No docker-compose project to clean${NC}"
 
   # Remove unused networks
   echo -e "${BLUE}Removing unused networks...${NC}"

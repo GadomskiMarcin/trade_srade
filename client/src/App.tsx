@@ -6,11 +6,12 @@ import Navbar from './components/Navbar';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import Profile from './components/Profile';
+import Dashboard from './components/Dashboard';
 import LoadingSpinner from './components/LoadingSpinner';
 import { useAuth } from './hooks/useAuth';
-import { useLogin, useSignup, useProfile } from './hooks/useApi';
+import { useLogin, useSignup, useTemporaryUser, useProfile } from './hooks/useApi';
 import { AuthResponse } from './types/api';
-import './App.css';
+import './styles/base.css';
 
 // Set default axios base URL
 axios.defaults.baseURL = 'http://localhost:8080';
@@ -38,6 +39,12 @@ const signupRoute = createRoute({
   component: SignupComponent,
 });
 
+const dashboardRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/dashboard',
+  component: DashboardComponent,
+});
+
 const profileRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/profile',
@@ -45,7 +52,7 @@ const profileRoute = createRoute({
 });
 
 // Create the route tree
-const routeTree = rootRoute.addChildren([indexRoute, loginRoute, signupRoute, profileRoute]);
+const routeTree = rootRoute.addChildren([indexRoute, loginRoute, signupRoute, dashboardRoute, profileRoute]);
 
 // Root component with authentication logic
 function RootComponent(): React.JSX.Element {
@@ -57,7 +64,6 @@ function RootComponent(): React.JSX.Element {
 
   return (
     <div className="App">
-      <Navbar user={user} onLogout={logout} />
       <Outlet />
     </div>
   );
@@ -70,7 +76,7 @@ function IndexComponent(): null {
 
   React.useEffect(() => {
     if (token) {
-      navigate({ to: '/profile' });
+      navigate({ to: '/dashboard' });
     } else {
       navigate({ to: '/login' });
     }
@@ -83,48 +89,86 @@ function IndexComponent(): null {
 function LoginComponent(): React.JSX.Element {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { login } = useAuth();
   const token = localStorage.getItem('token');
-  const loginMutation = useLogin();
+  
+  const loginMutation = useLogin({
+    onSuccess: (data: AuthResponse) => {
+      localStorage.setItem('token', data.token);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+      queryClient.setQueryData(['user'], data.user);
+      login(data.user, data.token);
+      navigate({ to: '/dashboard' });
+    },
+  });
+  
+  const temporaryUserMutation = useTemporaryUser({
+    onSuccess: (data: AuthResponse) => {
+      localStorage.setItem('token', data.token);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+      queryClient.setQueryData(['user'], data.user);
+      login(data.user, data.token);
+      navigate({ to: '/dashboard' });
+    },
+  });
 
   React.useEffect(() => {
     if (token) {
-      navigate({ to: '/profile' });
+      navigate({ to: '/dashboard' });
     }
   }, [token, navigate]);
 
-  // Login success handler - currently not used but kept for future use
-  const _handleLoginSuccess = (data: AuthResponse) => {
-    localStorage.setItem('token', data.token);
-    axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
-    queryClient.setQueryData(['user'], data.user);
-    navigate({ to: '/profile' });
-  };
-
-  return <Login onLogin={loginMutation} />;
+  return <Login onLogin={loginMutation} onTemporaryUser={temporaryUserMutation} />;
 }
 
 // Signup component with TanStack Query
 function SignupComponent(): React.JSX.Element {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { login } = useAuth();
   const token = localStorage.getItem('token');
-  const signupMutation = useSignup();
+  
+  const signupMutation = useSignup({
+    onSuccess: (data: AuthResponse) => {
+      localStorage.setItem('token', data.token);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+      queryClient.setQueryData(['user'], data.user);
+      login(data.user, data.token);
+      navigate({ to: '/dashboard' });
+    },
+  });
 
   React.useEffect(() => {
     if (token) {
-      navigate({ to: '/profile' });
+      navigate({ to: '/dashboard' });
     }
   }, [token, navigate]);
 
-  // Signup success handler - currently not used but kept for future use
-  const _handleSignupSuccess = (data: AuthResponse) => {
-    localStorage.setItem('token', data.token);
-    axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
-    queryClient.setQueryData(['user'], data.user);
-    navigate({ to: '/profile' });
-  };
-
   return <Signup onSignup={signupMutation} />;
+}
+
+// Dashboard component with TanStack Query
+function DashboardComponent(): React.JSX.Element | null {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+  const token = localStorage.getItem('token');
+  const { data: user, isLoading, error } = useProfile(!!token);
+
+  React.useEffect(() => {
+    if (!token) {
+      navigate({ to: '/login' });
+    }
+  }, [token, navigate]);
+
+  if (!token) return null;
+  if (isLoading) return <LoadingSpinner message="Loading dashboard..." />;
+  if (error) {
+    localStorage.removeItem('token');
+    navigate({ to: '/login' });
+    return null;
+  }
+
+  return user ? <Dashboard user={user} onLogout={logout} /> : null;
 }
 
 // Profile component with TanStack Query

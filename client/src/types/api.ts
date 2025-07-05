@@ -17,6 +17,10 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface TemporaryUserRequest {
+  name: string;
+}
+
 export interface AuthResponse {
   message: string;
   token: string;
@@ -47,10 +51,19 @@ export interface SignupFormData {
   confirmPassword: string;
 }
 
+export interface TemporaryUserFormData {
+  name: string;
+}
+
 // Component Props Types
 export interface LoginProps {
   onLogin: {
     mutateAsync: (data: LoginFormData) => Promise<AuthResponse>;
+    isPending: boolean;
+    error: Error | null;
+  };
+  onTemporaryUser: {
+    mutateAsync: (data: TemporaryUserFormData) => Promise<AuthResponse>;
     isPending: boolean;
     error: Error | null;
   };

@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/loading.css';
 
 interface LoadingSpinnerProps {
   message?: string;
@@ -19,9 +20,9 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     <div className="auth-container">
       <div className="auth-card">
         <div className="auth-header">
-          <div className="flex flex-col items-center space-y-4">
-            <div className={`animate-spin rounded-full border-4 border-gray-300 border-t-blue-600 ${sizeClasses[size]}`}></div>
-            <h1 className="text-xl font-semibold text-gray-700">{message}</h1>
+          <div className="loading-spinner">
+            <div className={`spinner ${size}`}></div>
+            <h1 className="loading-message">{message}</h1>
           </div>
         </div>
       </div>

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
-LOGFILE="$(dirname "$0")/dev.log"
-ERRFILE="$(dirname "$0")/dev.err"
+LOGFILE="$(dirname "$0")/prod.log"
+ERRFILE="$(dirname "$0")/prod.err"
 
 # Color codes
 RED='\033[0;31m'
@@ -21,7 +21,7 @@ trap fail ERR
 
 # Start logging
 {
-  echo -e "${YELLOW}==== $(date) Starting dev environment ====${NC}"
+  echo -e "${YELLOW}==== $(date) Starting production environment ====${NC}"
   echo -e "${YELLOW}Project root: $(pwd)${NC}"
 
   # Check Docker
@@ -47,7 +47,7 @@ trap fail ERR
   echo -e "${GREEN}Using: $DC${NC}"
 
   # Start all services
-  $DC -f docker-compose.dev.yml up --build 2> >(tee -a "$ERRFILE" >&2)
+  $DC up --build 2> >(tee -a "$ERRFILE" >&2)
 
-  echo -e "${GREEN}==== $(date) Dev environment stopped ====${NC}"
+  echo -e "${GREEN}==== $(date) Production environment stopped ====${NC}"
 } 2>&1 | tee "$LOGFILE" 

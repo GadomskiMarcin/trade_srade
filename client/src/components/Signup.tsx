@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { SignupProps, SignupFormData } from '../types/api';
+import '../styles/auth.css';
 
 const Signup: React.FC<SignupProps> = ({ onSignup }) => {
   const [formData, setFormData] = useState<SignupFormData>({
@@ -24,13 +25,13 @@ const Signup: React.FC<SignupProps> = ({ onSignup }) => {
 
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError('Passwords do not match.');
       return;
     }
 
     // Validate password length
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
+      setError('Password must be at least 6 characters long.');
       return;
     }
 
@@ -38,7 +39,7 @@ const Signup: React.FC<SignupProps> = ({ onSignup }) => {
       const { confirmPassword: _confirmPassword, ...signupData } = formData;
       await onSignup.mutateAsync(signupData);
     } catch (error: any) {
-      setError(error.response?.data?.error || 'Signup failed. Please try again.');
+      setError(error.response?.data?.error || 'Unable to create account. Please try again.');
     }
   };
 
@@ -47,12 +48,12 @@ const Signup: React.FC<SignupProps> = ({ onSignup }) => {
       <div className="auth-card">
         <div className="auth-header">
           <h1>Create Account</h1>
-          <p>Join us today</p>
+          <p>Sign up to get started. It’s quick and easy!</p>
         </div>
 
-        {error && <div className="error-message">{error}</div>}
+        {error && <div className="error-message" role="alert">{error}</div>}
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} aria-label="Sign up form">
           <div className="form-group">
             <label htmlFor="name">Full Name</label>
             <input
@@ -62,12 +63,15 @@ const Signup: React.FC<SignupProps> = ({ onSignup }) => {
               value={formData.name}
               onChange={handleChange}
               required
+              aria-required="true"
+              aria-label="Full name"
               disabled={onSignup.isPending}
+              placeholder="Your full name"
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">Email address</label>
             <input
               type="email"
               id="email"
@@ -75,7 +79,11 @@ const Signup: React.FC<SignupProps> = ({ onSignup }) => {
               value={formData.email}
               onChange={handleChange}
               required
+              autoComplete="email"
+              aria-required="true"
+              aria-label="Email address"
               disabled={onSignup.isPending}
+              placeholder="you@example.com"
             />
           </div>
 
@@ -88,9 +96,14 @@ const Signup: React.FC<SignupProps> = ({ onSignup }) => {
               value={formData.password}
               onChange={handleChange}
               required
-              disabled={onSignup.isPending}
               minLength={6}
+              autoComplete="new-password"
+              aria-required="true"
+              aria-label="Password"
+              disabled={onSignup.isPending}
+              placeholder="Create a password"
             />
+            <small className="helper-text">Must be at least 6 characters.</small>
           </div>
 
           <div className="form-group">
@@ -102,7 +115,11 @@ const Signup: React.FC<SignupProps> = ({ onSignup }) => {
               value={formData.confirmPassword}
               onChange={handleChange}
               required
+              autoComplete="new-password"
+              aria-required="true"
+              aria-label="Confirm password"
               disabled={onSignup.isPending}
+              placeholder="Repeat your password"
             />
           </div>
 
@@ -110,8 +127,9 @@ const Signup: React.FC<SignupProps> = ({ onSignup }) => {
             type="submit" 
             className="btn btn-primary"
             disabled={onSignup.isPending}
+            aria-busy={onSignup.isPending}
           >
-            {onSignup.isPending ? 'Creating Account...' : 'Create Account'}
+            {onSignup.isPending ? 'Creating account…' : 'Create Account'}
           </button>
         </form>
 

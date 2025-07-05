@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from '@tanstack/react-router';
 import { NavbarProps } from '../types/api';
+import '../styles/navbar.css';
 
 const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
   return (

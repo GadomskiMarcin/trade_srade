@@ -1,5 +1,6 @@
 import React from 'react';
 import { ProfileProps } from '../types/api';
+import '../styles/profile.css';
 
 const Profile: React.FC<ProfileProps> = ({ user }) => {
   const formatDate = (dateString: string): string => {
