@@ -1,0 +1,28 @@
+{
+  "name": "auth-app",
+  "version": "1.0.0",
+  "description": "Full-stack authentication app with React 18 + TypeScript and Go backend",
+  "main": "server/main.go",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && go run main.go",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "install-all": "npm install && cd client && npm install && cd ../server && go mod tidy",
+    "build-server": "cd server && go build -o auth-server main.go",
+    "run-server": "cd server && ./auth-server",
+    "docker:dev": "docker-compose -f docker-compose.dev.yml up --build",
+    "docker:prod": "docker-compose up --build",
+    "docker:down": "docker-compose down",
+    "docker:down-dev": "docker-compose -f docker-compose.dev.yml down",
+    "docker:clean": "docker-compose down -v && docker system prune -f",
+    "docker:logs": "docker-compose logs -f",
+    "docker:logs-dev": "docker-compose -f docker-compose.dev.yml logs -f"
+  },
+  "keywords": ["authentication", "login", "signup", "react", "golang", "typescript", "docker"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+} 

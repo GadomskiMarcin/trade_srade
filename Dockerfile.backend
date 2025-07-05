@@ -1,0 +1,69 @@
+# Build stage
+FROM golang:1.22-alpine AS builder
+
+# Install git and ca-certificates
+RUN apk add --no-cache git ca-certificates
+
+# Set working directory
+WORKDIR /app
+
+# Copy go mod files
+COPY server/go.mod server/go.sum ./
+
+# Download dependencies
+RUN go mod download
+
+# Copy source code
+COPY server/ ./
+
+# Build the binary
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o auth-server .
+
+# Frontend build stage
+FROM node:18-alpine AS frontend-builder
+
+# Set working directory for client
+WORKDIR /app/client
+
+# Copy client package files
+COPY client/package*.json ./
+
+# Install client dependencies
+RUN npm ci
+
+# Copy client source code
+COPY client/ ./
+
+# Build the React app
+RUN npm run build
+
+# Final stage
+FROM alpine:latest
+
+# Install ca-certificates for HTTPS requests
+RUN apk --no-cache add ca-certificates
+
+# Create app directory
+WORKDIR /app
+
+# Copy the binary from builder stage
+COPY --from=builder /app/auth-server .
+
+# Copy the built React app
+COPY --from=frontend-builder /app/client/build ./static
+
+# Create a non-root user
+RUN addgroup -g 1001 -S appgroup && \
+    adduser -u 1001 -S appuser -G appgroup
+
+# Change ownership
+RUN chown -R appuser:appgroup /app
+
+# Switch to non-root user
+USER appuser
+
+# Expose port
+EXPOSE 8080
+
+# Run the application
+CMD ["./auth-server"] 
