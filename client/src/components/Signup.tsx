@@ -35,7 +35,7 @@ const Signup: React.FC<SignupProps> = ({ onSignup }) => {
     }
 
     try {
-      const { confirmPassword, ...signupData } = formData;
+      const { confirmPassword: _confirmPassword, ...signupData } = formData;
       await onSignup.mutateAsync(signupData);
     } catch (error: any) {
       setError(error.response?.data?.error || 'Signup failed. Please try again.');

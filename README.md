@@ -1,13 +1,13 @@
 # 🔐 Authentication App
 
-A modern full-stack authentication application with **React 18 + TypeScript** frontend and **Go** backend, featuring login and signup functionality. Fully dockerized with **PostgreSQL** database.
+A modern full-stack authentication application with **React 19 + TypeScript** frontend and **Go** backend, featuring login and signup functionality. Fully dockerized with **PostgreSQL** database.
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 - **Docker** and **Docker Compose** installed
 - **Go 1.22+** (for local development)
-- **Node.js 18+** (for local development)
+- **Node.js 20+** (for local development)
 
 ### Option 1: Docker (Recommended - 1 Command)
 ```bash
@@ -30,14 +30,16 @@ npm run dev
 ## 📁 Project Structure
 
 ```
-├── client/                 # React 18 + TypeScript frontend
+├── client/                 # React 19 + TypeScript frontend
 │   ├── src/
 │   │   ├── components/    # React components
 │   │   ├── hooks/         # Custom hooks (useAuth, useApi)
 │   │   ├── types/         # TypeScript definitions
 │   │   └── App.tsx        # Main app with routing
 │   ├── package.json       # Frontend dependencies
-│   └── tsconfig.json      # TypeScript config
+│   ├── tsconfig.json      # TypeScript config
+│   ├── vite.config.ts     # Vite configuration
+│   └── index.html         # Entry HTML
 ├── server/                 # Go backend
 │   ├── handlers/          # HTTP handlers (auth, profile)
 │   ├── middleware/        # CORS middleware
@@ -88,7 +90,7 @@ npm run docker:logs-dev      # View dev logs
 ### Individual Services
 ```bash
 # Frontend only
-cd client && npm start       # React dev server (port 3000)
+cd client && npm run dev     # Vite dev server (port 3000)
 
 # Backend only
 cd server && go run main.go  # Go server (port 8080)
@@ -101,7 +103,7 @@ docker run --name auth_postgres -e POSTGRES_DB=auth_app -e POSTGRES_USER=postgre
 
 | Service | URL | Port | Description |
 |---------|-----|------|-------------|
-| **Frontend (Dev)** | http://localhost:3000 | 3000 | React development server |
+| **Frontend (Dev)** | http://localhost:3000 | 3000 | Vite development server |
 | **Frontend (Prod)** | http://localhost | 80 | Nginx production server |
 | **Backend API** | http://localhost:8080 | 8080 | Go REST API |
 | **PostgreSQL** | localhost:5432 | 5432 | Database |
@@ -156,14 +158,17 @@ Authorization: Bearer <jwt-token>
 
 ## 🏗️ Architecture
 
-### Frontend (React 18 + TypeScript)
+### Frontend (React 19 + TypeScript)
+- **Vite** - Modern build tool with ES modules
+- **React 19** - Latest React features
+- **TypeScript 5.8** - Latest type system
 - **TanStack Router** - Type-safe routing
 - **TanStack Query** - Server state management
 - **Custom Hooks** - `useAuth`, `useApi`
-- **TypeScript** - Full type safety
-- **Modern CSS** - Responsive design
+- **ES Modules** - Modern JavaScript modules
 
 ### Backend (Go)
+- **Go 1.22** - Latest stable version
 - **Standard Libraries** - `net/http`, `database/sql`
 - **PostgreSQL** - Database with `lib/pq`
 - **JWT** - Authentication with `golang-jwt`
@@ -179,6 +184,9 @@ Authorization: Bearer <jwt-token>
 ## 🔍 Code Quality Features
 
 ### Frontend
+- ✅ **Modern Build System** - Vite with ES modules
+- ✅ **Latest React 19** - Latest features and performance
+- ✅ **TypeScript 5.8** - Latest type system features
 - ✅ **Custom Hooks** - Extracted authentication logic
 - ✅ **Type Safety** - Full TypeScript coverage
 - ✅ **Component Separation** - No large monolithic components
@@ -218,9 +226,8 @@ DB_PASSWORD=your-secure-database-password
 ### Frontend Testing
 ```bash
 cd client
-npm test                    # Run tests
-npm test -- --watch        # Watch mode
-npm test -- --coverage     # Coverage report
+npm test                    # Run tests with Vitest
+npm run test:ui            # UI test runner
 ```
 
 ### Backend Testing
@@ -277,11 +284,12 @@ npm install
 ## 📝 Development Guidelines
 
 ### Frontend
-- Use **TypeScript** for all new code
+- Use **TypeScript 5.8** for all new code
+- Use **ES modules** for imports/exports
 - Create **custom hooks** for reusable logic
 - Keep components **small and focused**
 - Use **TanStack Query** for server state
-- Follow **React 18** best practices
+- Follow **React 19** best practices
 
 ### Backend
 - Use **standard Go libraries** only
@@ -324,4 +332,4 @@ If you encounter any issues:
 3. **Ensure all prerequisites** are installed
 4. **Try the clean setup** commands
 
-For AI agents: This project uses modern TypeScript/React patterns with TanStack Query and Router, and a Go backend with PostgreSQL. All dependencies are compatible without legacy peer deps.
+For AI agents: This project uses modern TypeScript/React patterns with TanStack Query and Router, Vite build system, and a Go backend using only standard libraries. All dependencies are compatible with ES modules.

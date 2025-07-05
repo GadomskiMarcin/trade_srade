@@ -24,6 +24,7 @@ export const useAuth = () => {
       const response = await axios.get<{ user: User }>('/api/profile');
       setUser(response.data.user);
     } catch (error) {
+      console.warn('Failed to fetch profile:', error);
       localStorage.removeItem('token');
       delete axios.defaults.headers.common['Authorization'];
     } finally {

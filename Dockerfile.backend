@@ -20,7 +20,7 @@ COPY server/ ./
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o auth-server .
 
 # Frontend build stage
-FROM node:18-alpine AS frontend-builder
+FROM node:20-alpine AS frontend-builder
 
 # Set working directory for client
 WORKDIR /app/client
@@ -50,7 +50,7 @@ WORKDIR /app
 COPY --from=builder /app/auth-server .
 
 # Copy the built React app
-COPY --from=frontend-builder /app/client/build ./static
+COPY --from=frontend-builder /app/client/dist ./static
 
 # Create a non-root user
 RUN addgroup -g 1001 -S appgroup && \

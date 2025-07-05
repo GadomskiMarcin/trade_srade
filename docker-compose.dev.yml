@@ -48,7 +48,7 @@ services:
 
   # React Frontend (Development)
   frontend:
-    image: node:18-alpine
+    image: node:20-alpine
     container_name: auth_frontend_dev
     working_dir: /app
     environment:
@@ -62,7 +62,7 @@ services:
       - backend
     networks:
       - auth_network_dev
-    command: npm start
+    command: npm run dev
 
 volumes:
   postgres_data_dev:

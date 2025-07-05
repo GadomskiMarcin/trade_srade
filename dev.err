@@ -1,0 +1,707 @@
+Building backend
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.backend
+#1 transferring dockerfile: 1.34kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/golang:1.22-alpine
+#2 ...
+
+#3 [internal] load metadata for docker.io/library/alpine:latest
+#3 DONE 1.6s
+
+#4 [internal] load metadata for docker.io/library/node:20-alpine
+#4 DONE 1.6s
+
+#2 [internal] load metadata for docker.io/library/golang:1.22-alpine
+#2 DONE 1.6s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 1.43kB 0.0s done
+#5 DONE 0.1s
+
+#6 [internal] load build context
+#6 DONE 0.0s
+
+#7 [frontend-builder 1/6] FROM docker.io/library/node:20-alpine@sha256:674181320f4f94582c6182eaa151bf92c6744d478be0f1d12db804b7d59b2d11
+#7 resolve docker.io/library/node:20-alpine@sha256:674181320f4f94582c6182eaa151bf92c6744d478be0f1d12db804b7d59b2d11
+#7 resolve docker.io/library/node:20-alpine@sha256:674181320f4f94582c6182eaa151bf92c6744d478be0f1d12db804b7d59b2d11 0.2s done
+#7 DONE 0.3s
+
+#8 [stage-2 1/7] FROM docker.io/library/alpine:latest@sha256:8a1f59ffb675680d47db6337b49d22281a139e9d709335b492be023728e11715
+#8 resolve docker.io/library/alpine:latest@sha256:8a1f59ffb675680d47db6337b49d22281a139e9d709335b492be023728e11715
+#8 resolve docker.io/library/alpine:latest@sha256:8a1f59ffb675680d47db6337b49d22281a139e9d709335b492be023728e11715 0.2s done
+#8 DONE 0.3s
+
+#9 [builder 1/7] FROM docker.io/library/golang:1.22-alpine@sha256:1699c10032ca2582ec89a24a1312d986a3f094aed3d5c1147b19880afe40e052
+#9 resolve docker.io/library/golang:1.22-alpine@sha256:1699c10032ca2582ec89a24a1312d986a3f094aed3d5c1147b19880afe40e052 0.2s done
+#9 DONE 0.3s
+
+#6 [internal] load build context
+#6 transferring context: 18.26MB 1.2s done
+#6 DONE 1.3s
+
+#10 [stage-2 2/7] RUN apk --no-cache add ca-certificates
+#10 CACHED
+
+#11 [stage-2 3/7] WORKDIR /app
+#11 CACHED
+
+#12 [frontend-builder 2/6] WORKDIR /app/client
+#12 CACHED
+
+#13 [builder 3/7] WORKDIR /app
+#13 CACHED
+
+#14 [builder 6/7] COPY server/ ./
+#14 CACHED
+
+#15 [frontend-builder 3/6] COPY client/package*.json ./
+#15 CACHED
+
+#16 [builder 7/7] RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o auth-server .
+#16 CACHED
+
+#17 [builder 2/7] RUN apk add --no-cache git ca-certificates
+#17 CACHED
+
+#18 [stage-2 6/7] RUN addgroup -g 1001 -S appgroup &&     adduser -u 1001 -S appuser -G appgroup
+#18 CACHED
+
+#19 [frontend-builder 4/6] RUN npm ci
+#19 CACHED
+
+#20 [frontend-builder 6/6] RUN npm run build
+#20 CACHED
+
+#21 [builder 4/7] COPY server/go.mod server/go.sum ./
+#21 CACHED
+
+#22 [frontend-builder 5/6] COPY client/ ./
+#22 CACHED
+
+#23 [stage-2 5/7] COPY --from=frontend-builder /app/client/dist ./static
+#23 CACHED
+
+#24 [builder 5/7] RUN go mod download
+#24 CACHED
+
+#25 [stage-2 4/7] COPY --from=builder /app/auth-server .
+#25 CACHED
+
+#26 [stage-2 7/7] RUN chown -R appuser:appgroup /app
+#26 CACHED
+
+#27 exporting to image
+#27 exporting layers 0.0s done
+#27 exporting manifest sha256:8f4f3ee7a5b11d4a521315fb796a6f6983585f3e39e5faaf7feec74766495fc5 0.0s done
+#27 exporting config sha256:24af581928b3556bf6e3d283d66384885f4fecad251a0e38fa2bcabc2d630d53 0.0s done
+#27 exporting attestation manifest sha256:80940de72c81cf4aef9f757622ba4b21d21ccf2d5c2c5e8dd3b5e9dffc845e81
+#27 exporting attestation manifest sha256:80940de72c81cf4aef9f757622ba4b21d21ccf2d5c2c5e8dd3b5e9dffc845e81 0.1s done
+#27 exporting manifest list sha256:3127182cbac91bd1053be88b05de83800e2957a3251bbbe824c39e20ba36a708
+#27 exporting manifest list sha256:3127182cbac91bd1053be88b05de83800e2957a3251bbbe824c39e20ba36a708 0.1s done
+#27 naming to docker.io/library/chujemuje_backend:latest 0.0s done
+#27 unpacking to docker.io/library/chujemuje_backend:latest 0.0s done
+#27 DONE 0.5s
+Building frontend
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.frontend
+#1 transferring dockerfile: 546B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:20-alpine
+#2 DONE 0.3s
+
+#3 [internal] load metadata for docker.io/library/nginx:alpine
+#3 DONE 1.3s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 1.43kB 0.0s done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 ...
+
+#6 [stage-1 1/3] FROM docker.io/library/nginx:alpine@sha256:b2e814d28359e77bd0aa5fed1939620075e4ffa0eb20423cc557b375bd5c14ad
+#6 resolve docker.io/library/nginx:alpine@sha256:b2e814d28359e77bd0aa5fed1939620075e4ffa0eb20423cc557b375bd5c14ad 0.1s done
+#6 DONE 0.1s
+
+#7 [builder 1/6] FROM docker.io/library/node:20-alpine@sha256:674181320f4f94582c6182eaa151bf92c6744d478be0f1d12db804b7d59b2d11
+#7 resolve docker.io/library/node:20-alpine@sha256:674181320f4f94582c6182eaa151bf92c6744d478be0f1d12db804b7d59b2d11 0.1s done
+#7 DONE 0.1s
+
+#5 [internal] load build context
+#5 transferring context: 548.03kB 0.5s done
+#5 DONE 0.5s
+
+#8 [builder 4/6] RUN npm ci
+#8 CACHED
+
+#9 [builder 5/6] COPY client/ ./
+#9 CACHED
+
+#10 [builder 6/6] RUN npm run build
+#10 CACHED
+
+#11 [stage-1 2/3] COPY --from=builder /app/dist /usr/share/nginx/html
+#11 CACHED
+
+#12 [builder 2/6] WORKDIR /app
+#12 CACHED
+
+#13 [builder 3/6] COPY client/package*.json ./
+#13 CACHED
+
+#14 [stage-1 3/3] COPY nginx.conf /etc/nginx/nginx.conf
+#14 CACHED
+
+#15 exporting to image
+#15 exporting layers 0.0s done
+#15 exporting manifest sha256:8f045f553165622ea0ef043ef012fb3b2deea72a51e750de6deebb70dbf36c07 0.0s done
+#15 exporting config sha256:aa1d54fbaeb67e8095f570f753340e9cba17cc97a263a04c4414c197f18cd7ee
+#15 exporting config sha256:aa1d54fbaeb67e8095f570f753340e9cba17cc97a263a04c4414c197f18cd7ee done
+#15 exporting attestation manifest sha256:d73d2ac5b229231130e1417f5b3088d1a3b65ad33cd8d90c5e7bb5e04a9e1f32 0.1s done
+#15 exporting manifest list sha256:a87107bb754be34f1eec5e29c3f9665f6e1ae7149b447326e3c66eeff878e678
+#15 exporting manifest list sha256:a87107bb754be34f1eec5e29c3f9665f6e1ae7149b447326e3c66eeff878e678 0.1s done
+#15 naming to docker.io/library/chujemuje_frontend:latest 0.0s done
+#15 unpacking to docker.io/library/chujemuje_frontend:latest 0.1s done
+#15 DONE 0.5s
+auth_postgres is up-to-date
+Recreating auth_backend ... 
+Recreating auth_backend ... error
+
+ERROR: for auth_backend  No such image: sha256:6d7ef60402530a5a6bc5fa29bd93e3b8ccb4ea75f0490cf72f9d2e425efd2ae5
+
+ERROR: for backend  No such image: sha256:6d7ef60402530a5a6bc5fa29bd93e3b8ccb4ea75f0490cf72f9d2e425efd2ae5
+The image for the service you're trying to recreate has been removed. If you continue, volume data could be lost. Consider backing up your data before continuing.
+
+Building backend
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.backend
+#1 transferring dockerfile: 1.34kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:20-alpine
+#2 DONE 0.3s
+
+#3 [internal] load metadata for docker.io/library/golang:1.22-alpine
+#3 ...
+
+#4 [internal] load metadata for docker.io/library/alpine:latest
+#4 DONE 0.7s
+
+#3 [internal] load metadata for docker.io/library/golang:1.22-alpine
+#3 DONE 0.7s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 1.43kB 0.0s done
+#5 DONE 0.1s
+
+#6 [internal] load build context
+#6 DONE 0.0s
+
+#7 [stage-2 1/7] FROM docker.io/library/alpine:latest@sha256:8a1f59ffb675680d47db6337b49d22281a139e9d709335b492be023728e11715
+#7 resolve docker.io/library/alpine:latest@sha256:8a1f59ffb675680d47db6337b49d22281a139e9d709335b492be023728e11715
+#7 ...
+
+#8 [builder 1/7] FROM docker.io/library/golang:1.22-alpine@sha256:1699c10032ca2582ec89a24a1312d986a3f094aed3d5c1147b19880afe40e052
+#8 resolve docker.io/library/golang:1.22-alpine@sha256:1699c10032ca2582ec89a24a1312d986a3f094aed3d5c1147b19880afe40e052 0.2s done
+#8 DONE 0.2s
+
+#9 [frontend-builder 1/6] FROM docker.io/library/node:20-alpine@sha256:674181320f4f94582c6182eaa151bf92c6744d478be0f1d12db804b7d59b2d11
+#9 resolve docker.io/library/node:20-alpine@sha256:674181320f4f94582c6182eaa151bf92c6744d478be0f1d12db804b7d59b2d11 0.2s done
+#9 DONE 0.2s
+
+#7 [stage-2 1/7] FROM docker.io/library/alpine:latest@sha256:8a1f59ffb675680d47db6337b49d22281a139e9d709335b492be023728e11715
+#7 resolve docker.io/library/alpine:latest@sha256:8a1f59ffb675680d47db6337b49d22281a139e9d709335b492be023728e11715 0.2s done
+#7 DONE 0.3s
+
+#6 [internal] load build context
+#6 transferring context: 18.26MB 1.5s done
+#6 DONE 1.5s
+
+#10 [builder 5/7] RUN go mod download
+#10 CACHED
+
+#11 [frontend-builder 5/6] COPY client/ ./
+#11 CACHED
+
+#12 [stage-2 4/7] COPY --from=builder /app/auth-server .
+#12 CACHED
+
+#13 [frontend-builder 2/6] WORKDIR /app/client
+#13 CACHED
+
+#14 [frontend-builder 3/6] COPY client/package*.json ./
+#14 CACHED
+
+#15 [builder 3/7] WORKDIR /app
+#15 CACHED
+
+#16 [stage-2 3/7] WORKDIR /app
+#16 CACHED
+
+#17 [builder 6/7] COPY server/ ./
+#17 CACHED
+
+#18 [stage-2 5/7] COPY --from=frontend-builder /app/client/dist ./static
+#18 CACHED
+
+#19 [frontend-builder 6/6] RUN npm run build
+#19 CACHED
+
+#20 [builder 2/7] RUN apk add --no-cache git ca-certificates
+#20 CACHED
+
+#21 [builder 7/7] RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o auth-server .
+#21 CACHED
+
+#22 [stage-2 2/7] RUN apk --no-cache add ca-certificates
+#22 CACHED
+
+#23 [frontend-builder 4/6] RUN npm ci
+#23 CACHED
+
+#24 [builder 4/7] COPY server/go.mod server/go.sum ./
+#24 CACHED
+
+#25 [stage-2 6/7] RUN addgroup -g 1001 -S appgroup &&     adduser -u 1001 -S appuser -G appgroup
+#25 CACHED
+
+#26 [stage-2 7/7] RUN chown -R appuser:appgroup /app
+#26 CACHED
+
+#27 exporting to image
+#27 exporting layers 0.0s done
+#27 exporting manifest sha256:8f4f3ee7a5b11d4a521315fb796a6f6983585f3e39e5faaf7feec74766495fc5 0.0s done
+#27 exporting config sha256:24af581928b3556bf6e3d283d66384885f4fecad251a0e38fa2bcabc2d630d53 0.0s done
+#27 exporting attestation manifest sha256:9917a4ee8bad52db9ebfcbfda0a87835f8a01b428961d4912c11292fea99a07e
+#27 exporting attestation manifest sha256:9917a4ee8bad52db9ebfcbfda0a87835f8a01b428961d4912c11292fea99a07e 0.1s done
+#27 exporting manifest list sha256:3f1e907885d28b092f18348f33733ac612c2780b63bbbe42e40b21c95caecc03
+#27 exporting manifest list sha256:3f1e907885d28b092f18348f33733ac612c2780b63bbbe42e40b21c95caecc03 0.1s done
+#27 naming to docker.io/library/chujemuje_backend:latest done
+#27 unpacking to docker.io/library/chujemuje_backend:latest 0.0s done
+#27 DONE 0.3s
+Building frontend
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.frontend
+#1 transferring dockerfile: 546B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:20-alpine
+#2 DONE 0.4s
+
+#3 [internal] load metadata for docker.io/library/nginx:alpine
+#3 DONE 0.5s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 1.43kB done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 ...
+
+#6 [stage-1 1/3] FROM docker.io/library/nginx:alpine@sha256:b2e814d28359e77bd0aa5fed1939620075e4ffa0eb20423cc557b375bd5c14ad
+#6 resolve docker.io/library/nginx:alpine@sha256:b2e814d28359e77bd0aa5fed1939620075e4ffa0eb20423cc557b375bd5c14ad 0.1s done
+#6 DONE 0.2s
+
+#7 [builder 1/6] FROM docker.io/library/node:20-alpine@sha256:674181320f4f94582c6182eaa151bf92c6744d478be0f1d12db804b7d59b2d11
+#7 resolve docker.io/library/node:20-alpine@sha256:674181320f4f94582c6182eaa151bf92c6744d478be0f1d12db804b7d59b2d11 0.1s done
+#7 DONE 0.2s
+
+#5 [internal] load build context
+#5 transferring context: 548.03kB 0.6s done
+#5 DONE 0.7s
+
+#8 [builder 4/6] RUN npm ci
+#8 CACHED
+
+#9 [builder 5/6] COPY client/ ./
+#9 CACHED
+
+#10 [stage-1 2/3] COPY --from=builder /app/dist /usr/share/nginx/html
+#10 CACHED
+
+#11 [builder 2/6] WORKDIR /app
+#11 CACHED
+
+#12 [builder 3/6] COPY client/package*.json ./
+#12 CACHED
+
+#13 [builder 6/6] RUN npm run build
+#13 CACHED
+
+#14 [stage-1 3/3] COPY nginx.conf /etc/nginx/nginx.conf
+#14 CACHED
+
+#15 exporting to image
+#15 exporting layers done
+#15 exporting manifest sha256:8f045f553165622ea0ef043ef012fb3b2deea72a51e750de6deebb70dbf36c07 done
+#15 exporting config sha256:aa1d54fbaeb67e8095f570f753340e9cba17cc97a263a04c4414c197f18cd7ee done
+#15 exporting attestation manifest sha256:989b6b52aaa635e165bacdb30ee5431d9b8738a6a7374c7fbff870d89c3a9ce9
+#15 exporting attestation manifest sha256:989b6b52aaa635e165bacdb30ee5431d9b8738a6a7374c7fbff870d89c3a9ce9 0.1s done
+#15 exporting manifest list sha256:14fe55e3d360b93d75e28be11a463a6f21058feb162b3d2b92650e8b22090c7f
+#15 exporting manifest list sha256:14fe55e3d360b93d75e28be11a463a6f21058feb162b3d2b92650e8b22090c7f 0.1s done
+#15 naming to docker.io/library/chujemuje_frontend:latest 0.0s done
+#15 unpacking to docker.io/library/chujemuje_frontend:latest 0.1s done
+#15 DONE 0.5s
+auth_postgres is up-to-date
+Recreating 428927c18cc9_auth_backend ... 
+
+ERROR: for 428927c18cc9_auth_backend  'ContainerConfig'
+
+ERROR: for backend  'ContainerConfig'
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/docker/api/client.py", line 268, in _raise_for_status
+    response.raise_for_status()
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 404 Client Error: Not Found for url: http+docker://localhost/v1.47/images/sha256:6d7ef60402530a5a6bc5fa29bd93e3b8ccb4ea75f0490cf72f9d2e425efd2ae5/json
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/compose/cli/main.py", line 1186, in up
+    to_attach = up(False)
+                ^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/cli/main.py", line 1166, in up
+    return self.project.up(
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/project.py", line 697, in up
+    results, errors = parallel.parallel_execute(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/parallel.py", line 108, in parallel_execute
+    raise error_to_reraise
+  File "/usr/lib/python3/dist-packages/compose/parallel.py", line 206, in producer
+    result = func(obj)
+             ^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/project.py", line 679, in do
+    return service.execute_convergence_plan(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 579, in execute_convergence_plan
+    return self._execute_convergence_recreate(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 499, in _execute_convergence_recreate
+    containers, errors = parallel_execute(
+                         ^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/parallel.py", line 108, in parallel_execute
+    raise error_to_reraise
+  File "/usr/lib/python3/dist-packages/compose/parallel.py", line 206, in producer
+    result = func(obj)
+             ^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 494, in recreate
+    return self.recreate_container(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 612, in recreate_container
+    new_container = self.create_container(
+                    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 330, in create_container
+    container_options = self._get_container_create_options(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 921, in _get_container_create_options
+    container_options, override_options = self._build_container_volume_options(
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 960, in _build_container_volume_options
+    binds, affinity = merge_volume_bindings(
+                      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 1548, in merge_volume_bindings
+    old_volumes, old_mounts = get_container_data_volumes(
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 1579, in get_container_data_volumes
+    container.image_config['ContainerConfig'].get('Volumes') or {}
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/container.py", line 61, in image_config
+    return self.client.inspect_image(self.image)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/docker/utils/decorators.py", line 19, in wrapped
+    return f(self, resource_id, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/docker/api/image.py", line 251, in inspect_image
+    return self._result(
+           ^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/docker/api/client.py", line 274, in _result
+    self._raise_for_status(response)
+  File "/usr/lib/python3/dist-packages/docker/api/client.py", line 270, in _raise_for_status
+    raise create_api_error_from_http_exception(e)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/docker/errors.py", line 31, in create_api_error_from_http_exception
+    raise cls(e, response=response, explanation=explanation)
+docker.errors.ImageNotFound: 404 Client Error for http+docker://localhost/v1.47/images/sha256:6d7ef60402530a5a6bc5fa29bd93e3b8ccb4ea75f0490cf72f9d2e425efd2ae5/json: Not Found ("No such image: sha256:6d7ef60402530a5a6bc5fa29bd93e3b8ccb4ea75f0490cf72f9d2e425efd2ae5")
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/bin/docker-compose", line 33, in <module>
+    sys.exit(load_entry_point('docker-compose==1.29.2', 'console_scripts', 'docker-compose')())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/cli/main.py", line 81, in main
+    command_func()
+  File "/usr/lib/python3/dist-packages/compose/cli/main.py", line 203, in perform_command
+    handler(command, command_options)
+  File "/usr/lib/python3/dist-packages/compose/metrics/decorator.py", line 18, in wrapper
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/cli/main.py", line 1197, in up
+    to_attach = up(True)
+                ^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/cli/main.py", line 1166, in up
+    return self.project.up(
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/project.py", line 697, in up
+    results, errors = parallel.parallel_execute(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/parallel.py", line 108, in parallel_execute
+    raise error_to_reraise
+  File "/usr/lib/python3/dist-packages/compose/parallel.py", line 206, in producer
+    result = func(obj)
+             ^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/project.py", line 679, in do
+    return service.execute_convergence_plan(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 579, in execute_convergence_plan
+    return self._execute_convergence_recreate(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 499, in _execute_convergence_recreate
+    containers, errors = parallel_execute(
+                         ^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/parallel.py", line 108, in parallel_execute
+    raise error_to_reraise
+  File "/usr/lib/python3/dist-packages/compose/parallel.py", line 206, in producer
+    result = func(obj)
+             ^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 494, in recreate
+    return self.recreate_container(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 612, in recreate_container
+    new_container = self.create_container(
+                    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 330, in create_container
+    container_options = self._get_container_create_options(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 921, in _get_container_create_options
+    container_options, override_options = self._build_container_volume_options(
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 960, in _build_container_volume_options
+    binds, affinity = merge_volume_bindings(
+                      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 1548, in merge_volume_bindings
+    old_volumes, old_mounts = get_container_data_volumes(
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 1579, in get_container_data_volumes
+    container.image_config['ContainerConfig'].get('Volumes') or {}
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+KeyError: 'ContainerConfig'
+
+[0;31m[ERROR] Something went wrong. Check the logs for details: ./dev.log, ./dev.err[0m
+Creating network "chujemuje_auth_network" with driver "bridge"
+Creating volume "chujemuje_postgres_data" with default driver
+Building backend
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.backend
+#1 transferring dockerfile: 1.34kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:20-alpine
+#2 DONE 0.8s
+
+#3 [internal] load metadata for docker.io/library/golang:1.22-alpine
+#3 DONE 0.8s
+
+#4 [internal] load metadata for docker.io/library/alpine:latest
+#4 DONE 0.8s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 1.43kB 0.0s done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 DONE 0.0s
+
+#7 [stage-2 1/7] FROM docker.io/library/alpine:latest@sha256:8a1f59ffb675680d47db6337b49d22281a139e9d709335b492be023728e11715
+#7 resolve docker.io/library/alpine:latest@sha256:8a1f59ffb675680d47db6337b49d22281a139e9d709335b492be023728e11715
+#7 resolve docker.io/library/alpine:latest@sha256:8a1f59ffb675680d47db6337b49d22281a139e9d709335b492be023728e11715 0.2s done
+#7 DONE 0.2s
+
+#8 [frontend-builder 1/6] FROM docker.io/library/node:20-alpine@sha256:674181320f4f94582c6182eaa151bf92c6744d478be0f1d12db804b7d59b2d11
+#8 resolve docker.io/library/node:20-alpine@sha256:674181320f4f94582c6182eaa151bf92c6744d478be0f1d12db804b7d59b2d11
+#8 resolve docker.io/library/node:20-alpine@sha256:674181320f4f94582c6182eaa151bf92c6744d478be0f1d12db804b7d59b2d11 0.2s done
+#8 DONE 0.2s
+
+#9 [builder 1/7] FROM docker.io/library/golang:1.22-alpine@sha256:1699c10032ca2582ec89a24a1312d986a3f094aed3d5c1147b19880afe40e052
+#9 resolve docker.io/library/golang:1.22-alpine@sha256:1699c10032ca2582ec89a24a1312d986a3f094aed3d5c1147b19880afe40e052 0.2s done
+#9 DONE 0.2s
+
+#6 [internal] load build context
+#6 transferring context: 18.26MB 1.2s done
+#6 DONE 1.2s
+
+#10 [builder 2/7] RUN apk add --no-cache git ca-certificates
+#10 CACHED
+
+#11 [frontend-builder 4/6] RUN npm ci
+#11 CACHED
+
+#12 [builder 5/7] RUN go mod download
+#12 CACHED
+
+#13 [frontend-builder 2/6] WORKDIR /app/client
+#13 CACHED
+
+#14 [stage-2 5/7] COPY --from=frontend-builder /app/client/dist ./static
+#14 CACHED
+
+#15 [stage-2 2/7] RUN apk --no-cache add ca-certificates
+#15 CACHED
+
+#16 [frontend-builder 6/6] RUN npm run build
+#16 CACHED
+
+#17 [builder 3/7] WORKDIR /app
+#17 CACHED
+
+#18 [builder 6/7] COPY server/ ./
+#18 CACHED
+
+#19 [stage-2 3/7] WORKDIR /app
+#19 CACHED
+
+#20 [stage-2 4/7] COPY --from=builder /app/auth-server .
+#20 CACHED
+
+#21 [builder 4/7] COPY server/go.mod server/go.sum ./
+#21 CACHED
+
+#22 [frontend-builder 3/6] COPY client/package*.json ./
+#22 CACHED
+
+#23 [frontend-builder 5/6] COPY client/ ./
+#23 CACHED
+
+#24 [builder 7/7] RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o auth-server .
+#24 CACHED
+
+#25 [stage-2 6/7] RUN addgroup -g 1001 -S appgroup &&     adduser -u 1001 -S appuser -G appgroup
+#25 CACHED
+
+#26 [stage-2 7/7] RUN chown -R appuser:appgroup /app
+#26 CACHED
+
+#27 exporting to image
+#27 exporting layers done
+#27 exporting manifest sha256:8f4f3ee7a5b11d4a521315fb796a6f6983585f3e39e5faaf7feec74766495fc5 done
+#27 exporting config sha256:24af581928b3556bf6e3d283d66384885f4fecad251a0e38fa2bcabc2d630d53 done
+#27 exporting attestation manifest sha256:a3c48534416141451e7ef8005a3e12ec66c0e74760e3d25233a97b9d77d431cc
+#27 exporting attestation manifest sha256:a3c48534416141451e7ef8005a3e12ec66c0e74760e3d25233a97b9d77d431cc 0.1s done
+#27 exporting manifest list sha256:6d0717511475830f5553b96e548f4fd5b8a7ded3f6a097e3b59db227b9b7d075 0.1s done
+#27 naming to docker.io/library/chujemuje_backend:latest 0.0s done
+#27 unpacking to docker.io/library/chujemuje_backend:latest 0.0s done
+#27 DONE 0.4s
+Building frontend
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.frontend
+#1 transferring dockerfile: 546B 0.0s done
+#1 DONE 0.1s
+
+#2 [internal] load metadata for docker.io/library/node:20-alpine
+#2 DONE 0.3s
+
+#3 [internal] load metadata for docker.io/library/nginx:alpine
+#3 DONE 0.7s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 1.43kB 0.0s done
+#4 DONE 0.0s
+
+#5 [builder 1/6] FROM docker.io/library/node:20-alpine@sha256:674181320f4f94582c6182eaa151bf92c6744d478be0f1d12db804b7d59b2d11
+#5 resolve docker.io/library/node:20-alpine@sha256:674181320f4f94582c6182eaa151bf92c6744d478be0f1d12db804b7d59b2d11 0.1s done
+#5 DONE 0.1s
+
+#6 [internal] load build context
+#6 ...
+
+#7 [stage-1 1/3] FROM docker.io/library/nginx:alpine@sha256:b2e814d28359e77bd0aa5fed1939620075e4ffa0eb20423cc557b375bd5c14ad
+#7 resolve docker.io/library/nginx:alpine@sha256:b2e814d28359e77bd0aa5fed1939620075e4ffa0eb20423cc557b375bd5c14ad 0.1s done
+#7 DONE 0.1s
+
+#6 [internal] load build context
+#6 transferring context: 548.03kB 0.5s done
+#6 DONE 0.5s
+
+#8 [builder 2/6] WORKDIR /app
+#8 CACHED
+
+#9 [builder 3/6] COPY client/package*.json ./
+#9 CACHED
+
+#10 [builder 4/6] RUN npm ci
+#10 CACHED
+
+#11 [builder 5/6] COPY client/ ./
+#11 CACHED
+
+#12 [builder 6/6] RUN npm run build
+#12 CACHED
+
+#13 [stage-1 2/3] COPY --from=builder /app/dist /usr/share/nginx/html
+#13 CACHED
+
+#14 [stage-1 3/3] COPY nginx.conf /etc/nginx/nginx.conf
+#14 CACHED
+
+#15 exporting to image
+#15 exporting layers 0.0s done
+#15 exporting manifest sha256:8f045f553165622ea0ef043ef012fb3b2deea72a51e750de6deebb70dbf36c07 0.0s done
+#15 exporting config sha256:aa1d54fbaeb67e8095f570f753340e9cba17cc97a263a04c4414c197f18cd7ee 0.0s done
+#15 exporting attestation manifest sha256:a822c0ec5cd1efece6e5547e15c0663ddfa9065265e4931a528c80b51a0dc8f8 0.1s done
+#15 exporting manifest list sha256:3a61c45bbef5a1fae63da1267606b6ca296d739da08858d75d0c0b933f1d1ac5
+#15 exporting manifest list sha256:3a61c45bbef5a1fae63da1267606b6ca296d739da08858d75d0c0b933f1d1ac5 0.1s done
+#15 naming to docker.io/library/chujemuje_frontend:latest 0.0s done
+#15 unpacking to docker.io/library/chujemuje_frontend:latest 0.1s done
+#15 DONE 0.5s
+Creating auth_postgres ... 
+Creating auth_postgres ... done
+Creating auth_backend  ... 
+Creating auth_backend  ... done
+Creating auth_frontend ... 
+Creating auth_frontend ... done
+
+[0;31m[ERROR] Something went wrong. Check the logs for details: ./dev.log, ./dev.err[0m
+time="2025-07-05T18:09:35+02:00" level=warning msg="/home/marcin/Pulpit/chujemuje/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+ Service backend  Building
+ Service backend  Built
+ Service frontend  Building
+ Service frontend  Built
+ Network chujemuje_auth_network  Creating
+ Network chujemuje_auth_network  Created
+ Volume "chujemuje_postgres_data"  Creating
+ Volume "chujemuje_postgres_data"  Created
+ Container auth_postgres  Creating
+ Container auth_postgres  Created
+ Container auth_backend  Creating
+ Container auth_backend  Created
+ Container auth_frontend  Creating
+ Container auth_frontend  Created
+auth_postgres  | sh: locale: not found
+auth_postgres  | 2025-07-05 16:09:45.478 UTC [35] WARNING:  no usable system locales were found
+auth_postgres  | initdb: warning: enabling "trust" authentication for local connections
+auth_postgres  | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+auth_postgres  | 2025-07-05 16:09:47.285 UTC [1] LOG:  starting PostgreSQL 15.13 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+auth_postgres  | 2025-07-05 16:09:47.285 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+auth_postgres  | 2025-07-05 16:09:47.285 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+auth_postgres  | 2025-07-05 16:09:47.315 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+auth_postgres  | 2025-07-05 16:09:47.337 UTC [57] LOG:  database system was shut down at 2025-07-05 16:09:47 UTC
+auth_postgres  | 2025-07-05 16:09:47.357 UTC [1] LOG:  database system is ready to accept connections
+auth_backend   | 2025/07/05 16:09:55 Database initialized successfully
+auth_backend   | 2025/07/05 16:09:55 Server starting on port 8080
+auth_postgres  | 2025-07-05 16:14:47.343 UTC [55] LOG:  checkpoint starting: time
+auth_postgres  | 2025-07-05 16:14:54.689 UTC [55] LOG:  checkpoint complete: wrote 75 buffers (0.5%); 0 WAL file(s) added, 0 removed, 0 recycled; write=7.289 s, sync=0.019 s, total=7.346 s; sync files=53, longest=0.010 s, average=0.001 s; distance=228 kB, estimate=228 kB
+auth_frontend  | 2025/07/05 16:18:33 [error] 30#30: *1 open() "/usr/share/nginx/html/vite.svg" failed (2: No such file or directory), client: 172.18.0.1, server: localhost, request: "GET /vite.svg HTTP/1.1", host: "localhost:3000", referrer: "http://localhost:3000/login"
+auth_frontend  | 2025/07/05 16:18:33 [error] 30#30: *1 open() "/usr/share/nginx/html/vite.svg" failed (2: No such file or directory), client: 172.18.0.1, server: localhost, request: "GET /vite.svg HTTP/1.1", host: "localhost:3000", referrer: "http://localhost:3000/login"
+
+[0;31m[ERROR] Something went wrong. Check the logs for details: ./dev.log, ./dev.err[0m

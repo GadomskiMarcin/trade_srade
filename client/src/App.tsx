@@ -92,7 +92,8 @@ function LoginComponent(): React.JSX.Element {
     }
   }, [token, navigate]);
 
-  const handleLoginSuccess = (data: AuthResponse) => {
+  // Login success handler - currently not used but kept for future use
+  const _handleLoginSuccess = (data: AuthResponse) => {
     localStorage.setItem('token', data.token);
     axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
     queryClient.setQueryData(['user'], data.user);
@@ -115,7 +116,8 @@ function SignupComponent(): React.JSX.Element {
     }
   }, [token, navigate]);
 
-  const handleSignupSuccess = (data: AuthResponse) => {
+  // Signup success handler - currently not used but kept for future use
+  const _handleSignupSuccess = (data: AuthResponse) => {
     localStorage.setItem('token', data.token);
     axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
     queryClient.setQueryData(['user'], data.user);

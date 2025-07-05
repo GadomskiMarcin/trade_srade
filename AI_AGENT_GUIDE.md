@@ -5,27 +5,32 @@ This document provides specific information for AI agents working with this auth
 ## 🏗️ Project Overview
 
 This is a **full-stack authentication application** with:
-- **Frontend**: React 18 + TypeScript + TanStack Query + TanStack Router
+- **Frontend**: React 19 + TypeScript + Vite + TanStack Query + TanStack Router
 - **Backend**: Go with standard libraries + PostgreSQL + JWT
 - **Infrastructure**: Docker + Docker Compose + Nginx
 
 ## 📁 Key File Locations
 
-### Frontend (React)
+### Frontend (React 19 + Vite)
 ```
-client/src/
-├── App.tsx              # Main app with routing (120 lines)
-├── components/           # React components
-│   ├── Login.tsx        # Login form component
-│   ├── Signup.tsx       # Signup form component
-│   ├── Profile.tsx      # User profile component
-│   ├── Navbar.tsx       # Navigation component
-│   └── LoadingSpinner.tsx # Loading component
-├── hooks/               # Custom hooks
-│   ├── useAuth.ts       # Authentication logic
-│   └── useApi.ts        # API operations
-└── types/               # TypeScript definitions
-    └── api.ts           # API types and interfaces
+client/
+├── src/
+│   ├── App.tsx              # Main app with routing (120 lines)
+│   ├── components/           # React components
+│   │   ├── Login.tsx        # Login form component
+│   │   ├── Signup.tsx       # Signup form component
+│   │   ├── Profile.tsx      # User profile component
+│   │   ├── Navbar.tsx       # Navigation component
+│   │   └── LoadingSpinner.tsx # Loading component
+│   ├── hooks/               # Custom hooks
+│   │   ├── useAuth.ts       # Authentication logic
+│   │   └── useApi.ts        # API operations
+│   └── types/               # TypeScript definitions
+│       └── api.ts           # API types and interfaces
+├── package.json             # Dependencies with ES modules
+├── tsconfig.json            # TypeScript 5.8 config
+├── vite.config.ts           # Vite configuration
+└── index.html               # Entry HTML
 ```
 
 ### Backend (Go)
@@ -46,12 +51,13 @@ server/
 ## 🔧 Technology Stack
 
 ### Frontend
-- **React 18.3.1** - Latest stable version
-- **TypeScript 5.5.0** - Strict type checking
-- **TanStack Query v5** - Server state management
-- **TanStack Router v1** - Type-safe routing
-- **Axios** - HTTP client
-- **No legacy peer deps** - All dependencies compatible
+- **React 19.1.0** - Latest React version
+- **TypeScript 5.8.3** - Latest type system
+- **Vite 5.4.10** - Modern build tool with ES modules
+- **TanStack Query v5.81.5** - Server state management
+- **TanStack Router v1.125.0** - Type-safe routing
+- **Axios 1.10.0** - HTTP client
+- **ES Modules** - Modern JavaScript modules
 
 ### Backend
 - **Go 1.22** - Latest stable version
@@ -88,8 +94,13 @@ npm run dev
 
 ## 📝 Code Patterns
 
-### Frontend Patterns
+### Frontend Patterns (ES Modules)
 ```typescript
+// ES module imports
+import React from 'react';
+import { useAuth } from './hooks/useAuth';
+import { useLogin } from './hooks/useApi';
+
 // Custom hooks for reusable logic
 const { user, loading, login, logout } = useAuth();
 const loginMutation = useLogin();
@@ -146,14 +157,21 @@ func middleware(next http.HandlerFunc) http.HandlerFunc {
 - **Local storage** for token persistence
 - **Context-free** architecture (no React Context)
 
+### Modern Build System
+- **Vite** - Fast development and build
+- **ES Modules** - Modern JavaScript modules
+- **TypeScript 5.8** - Latest type system features
+- **Hot Module Replacement** - Instant updates
+
 ## 🛠️ Development Guidelines
 
 ### Frontend
-- Use **TypeScript** for all new code
+- Use **TypeScript 5.8** for all new code
+- Use **ES modules** for imports/exports
 - Create **custom hooks** for reusable logic
 - Keep components **small and focused** (< 100 lines)
 - Use **TanStack Query** for server state
-- Follow **React 18** best practices
+- Follow **React 19** best practices
 
 ### Backend
 - Use **standard Go libraries** only
@@ -200,12 +218,15 @@ cd server && go test ./...
 
 ## 📚 Important Notes for AI Agents
 
-1. **No legacy peer deps** - All dependencies are compatible
-2. **Modular structure** - Code is well-organized and separated
-3. **Type safety** - Full TypeScript coverage
-4. **Standard libraries** - Go backend uses only standard libraries
-5. **Docker-ready** - Complete containerization setup
-6. **Production-ready** - Includes Nginx and optimized builds
+1. **ES Modules** - All imports use modern ES module syntax
+2. **Vite Build System** - Fast development with HMR
+3. **React 19** - Latest React features and performance
+4. **TypeScript 5.8** - Latest type system features
+5. **Modular structure** - Code is well-organized and separated
+6. **Type safety** - Full TypeScript coverage
+7. **Standard libraries** - Go backend uses only standard libraries
+8. **Docker-ready** - Complete containerization setup
+9. **Production-ready** - Includes Nginx and optimized builds
 
 ## 🚨 Common Issues
 
@@ -213,6 +234,7 @@ cd server && go test ./...
 - **TypeScript errors**: Check types in `client/src/types/api.ts`
 - **Build errors**: Run `npm install` in client directory
 - **Runtime errors**: Check browser console and network tab
+- **Vite issues**: Check `vite.config.ts` configuration
 
 ### Backend Issues
 - **Database connection**: Ensure PostgreSQL is running
@@ -228,10 +250,12 @@ cd server && go test ./...
 
 1. **Always check existing code** before making changes
 2. **Follow the established patterns** in the codebase
-3. **Use TypeScript** for all frontend changes
-4. **Use standard Go libraries** for backend changes
-5. **Test your changes** before suggesting them
-6. **Keep files small** and focused on single responsibilities
-7. **Document your changes** with clear commit messages
+3. **Use TypeScript 5.8** for all frontend changes
+4. **Use ES modules** for imports/exports
+5. **Use standard Go libraries** for backend changes
+6. **Test your changes** before suggesting them
+7. **Keep files small** and focused on single responsibilities
+8. **Document your changes** with clear commit messages
+9. **Use Vite** for fast development and builds
 
-This project is well-structured and follows modern best practices. The modular architecture makes it easy to understand and extend. 
+This project uses the latest modern technologies with ES modules, React 19, TypeScript 5.8, and Vite for optimal performance and developer experience. 
