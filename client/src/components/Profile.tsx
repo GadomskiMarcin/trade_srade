@@ -39,7 +39,7 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
 
           <div className="profile-item">
             <span className="profile-label">Member Since:</span>
-            <span className="profile-value">{formatDate(user.created_at)}</span>
+            <span className="profile-value">{formatDate(user.createdAt)}</span>
           </div>
         </div>
       </div>

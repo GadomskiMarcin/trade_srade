@@ -3,7 +3,16 @@ export interface User {
   id: number;
   email: string;
   name: string;
-  created_at: string;
+  createdAt: string;
+}
+
+export interface Furniture {
+  id: number;
+  title: string;
+  url: string;
+  tags: string[];
+  seller: string;
+  location: string;
 }
 
 export interface SignupRequest {

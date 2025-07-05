@@ -10,8 +10,10 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   min-height: 100vh;
+  color: #2d3748;
+  line-height: 1.6;
 }
 
 code {
@@ -20,30 +22,39 @@ code {
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 24px;
 }
 
 .loading {
   text-align: center;
-  padding: 20px;
+  padding: 40px;
+  color: #4a5568;
+  font-size: 1.1rem;
+  font-weight: 500;
 }
 
 .error-message {
-  background: #fee;
-  color: #c33;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  font-size: 0.9rem;
+  background: rgba(245, 101, 101, 0.1);
+  color: #e53e3e;
+  padding: 16px 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border: 1px solid rgba(245, 101, 101, 0.2);
+  backdrop-filter: blur(10px);
 }
 
 .success-message {
-  background: #efe;
-  color: #363;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  font-size: 0.9rem;
+  background: rgba(72, 187, 120, 0.1);
+  color: #38a169;
+  padding: 16px 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border: 1px solid rgba(72, 187, 120, 0.2);
+  backdrop-filter: blur(10px);
 } 

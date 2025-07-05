@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { AuthResponse, LoginFormData, SignupFormData, TemporaryUserFormData, User } from '../types/api';
+import { AuthResponse, LoginFormData, SignupFormData, TemporaryUserFormData, User, Furniture } from '../types/api';
 
 // API functions
 const api = {
@@ -22,6 +22,15 @@ const api = {
   getProfile: async (): Promise<User> => {
     const response = await axios.get<{ user: User }>('/api/profile');
     return response.data.user;
+  },
+  
+  getFurniture: async (tags?: string[]): Promise<{ furniture: Furniture[]; total: number }> => {
+    const params = new URLSearchParams();
+    if (tags && tags.length > 0) {
+      tags.forEach(tag => params.append('tags', tag));
+    }
+    const response = await axios.get(`/api/furniture?${params.toString()}`);
+    return response.data;
   }
 };
 
@@ -52,5 +61,13 @@ export const useProfile = (enabled: boolean = true) => {
     queryKey: ['user'],
     queryFn: api.getProfile,
     enabled,
+  });
+};
+
+export const useFurniture = (tags?: string[]) => {
+  return useQuery<{ furniture: Furniture[]; total: number }>({
+    queryKey: ['furniture', tags],
+    queryFn: () => api.getFurniture(tags),
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 }; 
