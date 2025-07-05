@@ -1,261 +1,390 @@
-# 🤖 AI Agent Guide
+# 🤖 AI Agent Guide - FurnitureHub
 
-This document provides specific information for AI agents working with this authentication application.
+This guide helps AI agents understand and work with the FurnitureHub project - a Polish furniture marketplace built with React 19, TypeScript, Go, and PostgreSQL.
 
-## 🏗️ Project Overview
+## 📋 Project Overview
 
-This is a **full-stack authentication application** with:
-- **Frontend**: React 19 + TypeScript + Vite + TanStack Query + TanStack Router
-- **Backend**: Go with standard libraries + PostgreSQL + JWT
-- **Infrastructure**: Docker + Docker Compose + Nginx
+**FurnitureHub** is a full-stack furniture marketplace application featuring:
+- **Frontend**: React 19 + TypeScript + Vite with HMR
+- **Backend**: Go with PostgreSQL
+- **Authentication**: JWT-based with guest user support
+- **Furniture Listings**: Polish location-based furniture items
+- **Development**: Docker Compose with Hot Module Replacement
 
-## 📁 Key File Locations
+## 🏗️ Architecture Patterns
 
-### Frontend (React 19 + Vite)
+### Frontend Architecture
 ```
-client/
-├── src/
-│   ├── App.tsx              # Main app with routing (120 lines)
-│   ├── components/           # React components
-│   │   ├── Login.tsx        # Login form component
-│   │   ├── Signup.tsx       # Signup form component
-│   │   ├── Profile.tsx      # User profile component
-│   │   ├── Navbar.tsx       # Navigation component
-│   │   └── LoadingSpinner.tsx # Loading component
-│   ├── hooks/               # Custom hooks
-│   │   ├── useAuth.ts       # Authentication logic
-│   │   └── useApi.ts        # API operations
-│   └── types/               # TypeScript definitions
-│       └── api.ts           # API types and interfaces
-├── package.json             # Dependencies with ES modules
-├── tsconfig.json            # TypeScript 5.8 config
-├── vite.config.ts           # Vite configuration
-└── index.html               # Entry HTML
+client/src/
+├── components/          # React components
+│   ├── Dashboard.tsx   # Main furniture marketplace
+│   ├── Login.tsx       # Authentication form
+│   ├── Signup.tsx      # Registration form
+│   ├── Profile.tsx     # User profile
+│   ├── Navbar.tsx      # Navigation component
+│   └── LoadingSpinner.tsx # Loading indicator
+├── hooks/              # Custom React hooks
+│   ├── useAuth.ts      # Authentication state management
+│   └── useApi.ts       # API calls with TanStack Query
+├── types/              # TypeScript definitions
+│   └── api.ts          # API types and interfaces
+├── styles/             # Modular CSS files
+│   ├── base.css        # Global styles
+│   ├── auth.css        # Authentication styles
+│   ├── dashboard.css   # Dashboard styles
+│   ├── navbar.css      # Navigation styles
+│   ├── profile.css     # Profile styles
+│   └── loading.css     # Loading styles
+└── App.tsx             # Main app with routing
 ```
 
-### Backend (Go)
+### Backend Architecture
 ```
 server/
-├── main.go              # Server entry point (120 lines)
-├── handlers/            # HTTP handlers
-│   ├── auth.go          # Authentication handlers
-│   └── profile.go       # Profile handlers
-├── middleware/          # Middleware
-│   └── cors.go          # CORS handling
-├── models/              # Data models
-│   └── user.go          # User model
-└── utils/               # Utilities
-    └── response.go      # Response helpers
+├── handlers/           # HTTP request handlers
+│   ├── auth.go        # Authentication endpoints
+│   └── profile.go     # User profile endpoints
+├── middleware/         # HTTP middleware
+│   └── cors.go        # CORS handling
+├── models/            # Data models
+│   └── user.go        # User model
+├── utils/             # Utility functions
+│   └── response.go    # Response helpers
+└── main.go            # Server entry point
 ```
 
-## 🔧 Technology Stack
+## 🔧 Development Setup
 
-### Frontend
-- **React 19.1.0** - Latest React version
-- **TypeScript 5.8.3** - Latest type system
-- **Vite 5.4.10** - Modern build tool with ES modules
-- **TanStack Query v5.81.5** - Server state management
-- **TanStack Router v1.125.0** - Type-safe routing
-- **Axios 1.10.0** - HTTP client
-- **ES Modules** - Modern JavaScript modules
-
-### Backend
-- **Go 1.22** - Latest stable version
-- **Standard libraries only** - No external web frameworks
-- **PostgreSQL** - Database with `lib/pq`
-- **JWT** - Authentication with `golang-jwt`
-- **bcrypt** - Password hashing
-
-### Infrastructure
-- **Docker** - Containerization
-- **PostgreSQL 15** - Database
-- **Nginx** - Production serving
-
-## 🚀 Quick Start Commands
-
-### For AI Agents
+### Quick Start Commands
 ```bash
-# 1. Clone and setup
-git clone <repository>
-cd <project-directory>
-./setup.sh
+# Development with HMR
+./dev.sh
 
-# 2. Start with Docker (recommended)
-docker-compose up --build
+# Production
+./prod.sh
 
-# 3. Or start locally
-npm run dev
+# Cleanup
+./clean.sh
 ```
 
-### Access Points
-- **Frontend**: http://localhost:3000 (dev) or http://localhost (prod)
-- **Backend API**: http://localhost:8080
-- **Database**: localhost:5432
+### Docker Services
+- **auth_frontend**: React dev server with HMR (port 3000)
+- **auth_backend**: Go API server (port 8080)
+- **auth_postgres**: PostgreSQL database (port 5433)
 
-## 📝 Code Patterns
+## 📝 Key Development Patterns
 
-### Frontend Patterns (ES Modules)
+### 1. Authentication Flow
 ```typescript
-// ES module imports
-import React from 'react';
-import { useAuth } from './hooks/useAuth';
-import { useLogin } from './hooks/useApi';
+// Frontend authentication with TanStack Query
+const loginMutation = useLogin({
+  onSuccess: (data: AuthResponse) => {
+    localStorage.setItem('token', data.token);
+    axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+    queryClient.setQueryData(['user'], data.user);
+    login(data.user, data.token);
+    navigate({ to: '/dashboard' });
+  },
+});
+```
 
-// Custom hooks for reusable logic
-const { user, loading, login, logout } = useAuth();
-const loginMutation = useLogin();
-
-// Type-safe API calls
-const { data: user, isLoading, error } = useProfile(!!token);
-
-// Component structure
-const Component: React.FC<ComponentProps> = ({ prop }) => {
-  // State and effects
-  // Event handlers
-  // Render JSX
+### 2. API Hooks Pattern
+```typescript
+// Custom hooks for API calls
+export const useLogin = (options?: { onSuccess?: (data: AuthResponse) => void }) => {
+  return useMutation<AuthResponse, Error, LoginFormData>({
+    mutationFn: api.login,
+    onSuccess: options?.onSuccess,
+  });
 };
 ```
 
-### Backend Patterns
-```go
-// Handler structure
-func handlerName(w http.ResponseWriter, r *http.Request) {
-    // Validate method
-    // Parse request
-    // Business logic
-    // Database operations
-    // Response
-}
+### 3. Modular CSS Structure
+```typescript
+// Component-specific CSS imports
+import '../styles/auth.css';
+import '../styles/dashboard.css';
+import '../styles/navbar.css';
+```
 
-// Middleware pattern
-func middleware(next http.HandlerFunc) http.HandlerFunc {
-    return func(w http.ResponseWriter, r *http.Request) {
-        // Middleware logic
-        next(w, r)
-    }
+### 4. TypeScript Interfaces
+```typescript
+interface Furniture {
+  id: string;
+  title: string;
+  url: string;
+  tags: string[];
+  seller: string;
+  location: string;
 }
 ```
 
-## 🔍 Key Features
+## 🪑 Furniture Marketplace Features
 
-### Authentication Flow
-1. **Signup**: User creates account → Password hashed → JWT generated
-2. **Login**: User authenticates → Password verified → JWT generated
-3. **Profile**: JWT validated → User data returned
-4. **Logout**: Token removed → State cleared
+### Data Structure
+- **Furniture Items**: 12 items with Polish locations
+- **Categories**: Sofa, Chair, Table, Bed, Wardrobe, Desk, Cabinet, Lighting
+- **Locations**: Polish cities with voivodeships (e.g., "Warszawa, Mazowieckie")
+- **Images**: High-quality Unsplash furniture photos
 
-### Security Features
-- **Password hashing** with bcrypt
-- **JWT tokens** for authentication
-- **CORS protection** for cross-origin requests
-- **Input validation** on both frontend and backend
-- **Type safety** throughout the application
+### Filtering System
+```typescript
+const filteredFurniture = selectedTags.length > 0
+  ? mockFurniture.filter(furniture => 
+      furniture.tags.some(tag => selectedTags.includes(tag))
+    )
+  : mockFurniture;
+```
 
-### State Management
-- **TanStack Query** for server state
-- **Custom hooks** for authentication state
-- **Local storage** for token persistence
-- **Context-free** architecture (no React Context)
+### Polish Location Display
+```typescript
+<p className="picture-location">{furniture.location}</p>
+// CSS: .picture-location with location pin emoji (📍)
+```
 
-### Modern Build System
-- **Vite** - Fast development and build
-- **ES Modules** - Modern JavaScript modules
-- **TypeScript 5.8** - Latest type system features
-- **Hot Module Replacement** - Instant updates
+## 🔄 Hot Module Replacement (HMR)
 
-## 🛠️ Development Guidelines
+### Development Benefits
+- **Instant Updates**: Code changes reflect immediately
+- **State Preservation**: Component state maintained during updates
+- **Fast Iteration**: No full rebuilds required
 
-### Frontend
-- Use **TypeScript 5.8** for all new code
-- Use **ES modules** for imports/exports
-- Create **custom hooks** for reusable logic
-- Keep components **small and focused** (< 100 lines)
-- Use **TanStack Query** for server state
-- Follow **React 19** best practices
+### Vite Configuration
+```typescript
+// vite.config.ts
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    host: '0.0.0.0',
+    port: 3000,
+    watch: {
+      usePolling: true,
+    },
+  },
+});
+```
 
-### Backend
-- Use **standard Go libraries** only
-- Follow **Go conventions** and naming
-- Keep handlers **small and focused**
-- Use **proper error handling**
-- Write **clear documentation**
+## 🎨 Styling Patterns
 
-### File Organization
-- **Frontend**: Organize by feature (components, hooks, types)
-- **Backend**: Organize by responsibility (handlers, middleware, utils)
-- **Keep files small** (< 200 lines)
-- **Single responsibility** principle
+### Modular CSS Structure
+```css
+/* Component-specific styles */
+.auth-container { /* Authentication styles */ }
+.dashboard { /* Dashboard layout */ }
+.navbar { /* Navigation styles */ }
+```
 
-## 🔧 Common Tasks
+### Mobile-First Design
+```css
+/* Responsive breakpoints */
+@media (max-width: 768px) { /* Tablet styles */ }
+@media (max-width: 480px) { /* Mobile styles */ }
+```
 
-### Adding New Features
-1. **Frontend**: Create component → Add types → Create hook → Add route
-2. **Backend**: Create handler → Add model → Add route → Test
+### CSS Custom Properties
+```css
+.tag-btn {
+  background: var(--tag-color);
+}
+```
+
+## 🔐 Authentication Patterns
+
+### JWT Token Management
+```typescript
+// Token storage and axios configuration
+localStorage.setItem('token', data.token);
+axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+```
+
+### Guest User Support
+```typescript
+// Temporary user creation
+const temporaryUserMutation = useTemporaryUser({
+  onSuccess: (data: AuthResponse) => {
+    // Handle guest user authentication
+  },
+});
+```
+
+### Auto-Redirect Logic
+```typescript
+// Automatic redirection after authentication
+React.useEffect(() => {
+  if (token) {
+    navigate({ to: '/dashboard' });
+  }
+}, [token, navigate]);
+```
+
+## 🐳 Docker Patterns
+
+### Development vs Production
+```yaml
+# docker-compose.dev.yml - Development with HMR
+frontend:
+  volumes:
+    - ./client:/app
+    - /app/node_modules
+  command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 3000"
+
+# docker-compose.yml - Production with Nginx
+frontend:
+  build:
+    dockerfile: Dockerfile.frontend
+```
+
+### Volume Mounting
+- **Development**: Source code mounted for HMR
+- **Production**: Built application served by Nginx
+
+## 📊 State Management
+
+### TanStack Query Integration
+```typescript
+// Server state management
+const { data: user, isLoading, error } = useProfile(!!token);
+```
+
+### Local State with React Hooks
+```typescript
+const [selectedTags, setSelectedTags] = useState<string[]>([]);
+const [isSearchOpen, setIsSearchOpen] = useState(false);
+```
+
+### Custom Auth Hook
+```typescript
+const { user, loading, logout } = useAuth();
+```
+
+## 🔍 Common Development Tasks
+
+### Adding New Components
+1. Create component in `client/src/components/`
+2. Add TypeScript interfaces in `client/src/types/api.ts`
+3. Create CSS module in `client/src/styles/`
+4. Import and use in `App.tsx`
+
+### Adding New API Endpoints
+1. Add handler in `server/handlers/`
+2. Update routes in `server/main.go`
+3. Create API hook in `client/src/hooks/useApi.ts`
+4. Add TypeScript types in `client/src/types/api.ts`
+
+### Adding New Furniture Items
+1. Update `mockFurniture` array in `Dashboard.tsx`
+2. Add Polish location and seller information
+3. Use Unsplash furniture image URL
+4. Add appropriate tags for filtering
+
+### Styling New Components
+1. Create CSS file in `client/src/styles/`
+2. Import in component: `import '../styles/component.css'`
+3. Follow mobile-first responsive design
+4. Use CSS custom properties for theming
+
+## 🚨 Error Handling Patterns
+
+### Frontend Error Handling
+```typescript
+try {
+  await onLogin.mutateAsync(formData);
+} catch (error: any) {
+  setError(error.response?.data?.error || 'Login failed');
+}
+```
+
+### Backend Error Handling
+```go
+func handleError(w http.ResponseWriter, message string, status int) {
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(status)
+    json.NewEncoder(w).Encode(map[string]string{"error": message})
+}
+```
+
+## 🧪 Testing Considerations
+
+### Frontend Testing
+- Use Vitest for unit testing
+- Test custom hooks with React Testing Library
+- Mock API calls for component testing
+
+### Backend Testing
+- Use Go's built-in testing package
+- Test handlers with `httptest` package
+- Mock database for isolated testing
+
+## 📱 Responsive Design Patterns
+
+### Mobile-First Approach
+```css
+/* Base mobile styles */
+.pictures-grid {
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  .pictures-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+}
+```
+
+### Touch-Friendly Interactions
+```css
+/* Minimum touch target size */
+.tag-btn {
+  min-height: 44px;
+  padding: 8px 16px;
+}
+```
+
+## 🔄 Development Workflow
+
+### Making Changes
+1. **Frontend Changes**: Edit files in `client/src/` - HMR will update automatically
+2. **Backend Changes**: Restart backend container or use `go run main.go` locally
+3. **Database Changes**: Update models and restart backend
 
 ### Debugging
-```bash
-# Frontend logs
-npm run dev
+1. **Frontend**: Use browser dev tools and React DevTools
+2. **Backend**: Check Docker logs: `docker-compose logs backend`
+3. **Database**: Connect to PostgreSQL: `docker exec -it auth_postgres psql -U postgres -d auth_app`
 
-# Backend logs
-cd server && go run main.go
-
-# Docker logs
-docker-compose logs -f
-
-# Database logs
-docker logs auth_postgres
-```
-
-### Testing
-```bash
-# Frontend tests
-cd client && npm test
-
-# Backend tests
-cd server && go test ./...
-```
-
-## 📚 Important Notes for AI Agents
-
-1. **ES Modules** - All imports use modern ES module syntax
-2. **Vite Build System** - Fast development with HMR
-3. **React 19** - Latest React features and performance
-4. **TypeScript 5.8** - Latest type system features
-5. **Modular structure** - Code is well-organized and separated
-6. **Type safety** - Full TypeScript coverage
-7. **Standard libraries** - Go backend uses only standard libraries
-8. **Docker-ready** - Complete containerization setup
-9. **Production-ready** - Includes Nginx and optimized builds
-
-## 🚨 Common Issues
-
-### Frontend Issues
-- **TypeScript errors**: Check types in `client/src/types/api.ts`
-- **Build errors**: Run `npm install` in client directory
-- **Runtime errors**: Check browser console and network tab
-- **Vite issues**: Check `vite.config.ts` configuration
-
-### Backend Issues
-- **Database connection**: Ensure PostgreSQL is running
-- **Port conflicts**: Check if port 8080 is available
-- **Import errors**: Run `go mod tidy` in server directory
-
-### Docker Issues
-- **Build failures**: Run `docker system prune` and rebuild
-- **Port conflicts**: Stop existing containers
-- **Volume issues**: Run `docker volume prune`
+### Performance Optimization
+1. **Frontend**: Use React.memo for expensive components
+2. **Images**: Optimize with proper sizing and lazy loading
+3. **API**: Implement caching with TanStack Query
+4. **Database**: Add indexes for frequently queried fields
 
 ## 🎯 Best Practices for AI Agents
 
-1. **Always check existing code** before making changes
-2. **Follow the established patterns** in the codebase
-3. **Use TypeScript 5.8** for all frontend changes
-4. **Use ES modules** for imports/exports
-5. **Use standard Go libraries** for backend changes
-6. **Test your changes** before suggesting them
-7. **Keep files small** and focused on single responsibilities
-8. **Document your changes** with clear commit messages
-9. **Use Vite** for fast development and builds
+### Code Style
+- Use **TypeScript** for all frontend code
+- Follow **React 19** patterns and hooks
+- Use **modular CSS** for styling
+- Implement **mobile-first** responsive design
 
-This project uses the latest modern technologies with ES modules, React 19, TypeScript 5.8, and Vite for optimal performance and developer experience. 
+### Architecture
+- Keep components **small and focused**
+- Use **custom hooks** for reusable logic
+- Implement **proper error handling**
+- Follow **Go conventions** for backend
+
+### Development
+- Use **HMR** for fast iteration
+- Test changes in **development environment**
+- Follow **Docker patterns** for deployment
+- Maintain **type safety** throughout
+
+### Polish Localization
+- Use **Polish city names** and **voivodeships**
+- Display **location pin emoji** (📍)
+- Follow **Polish naming conventions**
+- Consider **Polish time zones** and **date formats**
+
+This guide should help AI agents understand and work effectively with the FurnitureHub project structure and development patterns. 

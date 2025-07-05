@@ -1,6 +1,6 @@
-# 🔐 Authentication App
+# 🪑 FurnitureHub - Polish Furniture Marketplace
 
-A modern full-stack authentication application with **React 19 + TypeScript** frontend and **Go** backend, featuring login and signup functionality. Fully dockerized with **PostgreSQL** database.
+A modern full-stack furniture marketplace application with **React 19 + TypeScript** frontend and **Go** backend, featuring authentication, furniture browsing, and Polish location-based listings. Fully dockerized with **PostgreSQL** database and Hot Module Replacement (HMR) for fast development.
 
 ## 🚀 Quick Start
 
@@ -9,22 +9,28 @@ A modern full-stack authentication application with **React 19 + TypeScript** fr
 - **Go 1.22+** (for local development)
 - **Node.js 20+** (for local development)
 
-### Option 1: Docker (Recommended - 1 Command)
+### Development with HMR (Recommended)
 ```bash
-# Start everything with PostgreSQL
+# Start development environment with Hot Module Replacement
+./dev.sh
+
+# Or manually:
+docker-compose -f docker-compose.dev.yml up --build
+```
+
+### Production Setup
+```bash
+# Start production environment
+./prod.sh
+
+# Or manually:
 docker-compose up --build
 ```
 
-### Option 2: Local Development
+### Cleanup
 ```bash
-# Install dependencies
-npm run install-all
-
-# Start PostgreSQL (Docker)
-docker run --name auth_postgres -e POSTGRES_DB=auth_app -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres:15-alpine
-
-# Start the application
-npm run dev
+# Clean up all containers and volumes
+./clean.sh
 ```
 
 ## 📁 Project Structure
@@ -32,13 +38,14 @@ npm run dev
 ```
 ├── client/                 # React 19 + TypeScript frontend
 │   ├── src/
-│   │   ├── components/    # React components
+│   │   ├── components/    # React components (Dashboard, Login, etc.)
 │   │   ├── hooks/         # Custom hooks (useAuth, useApi)
 │   │   ├── types/         # TypeScript definitions
+│   │   ├── styles/        # Modular CSS files
 │   │   └── App.tsx        # Main app with routing
 │   ├── package.json       # Frontend dependencies
 │   ├── tsconfig.json      # TypeScript config
-│   ├── vite.config.ts     # Vite configuration
+│   ├── vite.config.ts     # Vite configuration with HMR
 │   └── index.html         # Entry HTML
 ├── server/                 # Go backend
 │   ├── handlers/          # HTTP handlers (auth, profile)
@@ -48,48 +55,40 @@ npm run dev
 │   ├── main.go            # Server entry point
 │   └── go.mod             # Go dependencies
 ├── docker-compose.yml      # Production setup
-├── docker-compose.dev.yml  # Development setup
+├── docker-compose.dev.yml  # Development setup with HMR
 ├── Dockerfile.backend      # Backend container
-├── Dockerfile.frontend     # Frontend container
+├── dev.sh                  # Development startup script
+├── prod.sh                 # Production startup script
+├── clean.sh                # Cleanup script
 └── package.json           # Root scripts
 ```
 
 ## 🛠️ Development Commands
 
-### Root Level Commands
+### Quick Scripts
 ```bash
-# Install all dependencies
-npm run install-all
-
-# Start both frontend and backend
-npm run dev
-
-# Build frontend
-npm run build
-
-# Build Go backend
-npm run build-server
-
-# Run Go backend
-npm run run-server
+./dev.sh                    # Start development with HMR
+./prod.sh                   # Start production
+./clean.sh                  # Clean up everything
 ```
 
-### Docker Commands
+### Manual Docker Commands
 ```bash
-# Production
-npm run docker:prod          # Start production containers
-npm run docker:down          # Stop containers
-npm run docker:clean         # Clean up volumes
+# Development (with HMR)
+docker-compose -f docker-compose.dev.yml up --build
+docker-compose -f docker-compose.dev.yml down
 
-# Development
-npm run docker:dev           # Start with hot reloading
-npm run docker:down-dev      # Stop dev containers
-npm run docker:logs-dev      # View dev logs
+# Production
+docker-compose up --build
+docker-compose down
+
+# View logs
+docker-compose -f docker-compose.dev.yml logs -f
 ```
 
 ### Individual Services
 ```bash
-# Frontend only
+# Frontend only (with HMR)
 cd client && npm run dev     # Vite dev server (port 3000)
 
 # Backend only
@@ -103,17 +102,42 @@ docker run --name auth_postgres -e POSTGRES_DB=auth_app -e POSTGRES_USER=postgre
 
 | Service | URL | Port | Description |
 |---------|-----|------|-------------|
-| **Frontend (Dev)** | http://localhost:3000 | 3000 | Vite development server |
+| **Frontend (Dev)** | http://localhost:3000 | 3000 | Vite dev server with HMR |
 | **Frontend (Prod)** | http://localhost | 80 | Nginx production server |
 | **Backend API** | http://localhost:8080 | 8080 | Go REST API |
-| **PostgreSQL** | localhost:5432 | 5432 | Database |
+| **PostgreSQL** | localhost:5433 | 5433 | Database |
+
+## 🪑 Features
+
+### Authentication
+- ✅ **User Registration** - Email/password signup
+- ✅ **User Login** - Secure authentication
+- ✅ **Guest Access** - Temporary user accounts
+- ✅ **JWT Tokens** - Secure session management
+- ✅ **Auto-redirect** - Dashboard after login/signup
+
+### Furniture Marketplace
+- ✅ **Furniture Categories** - Sofa, Chair, Table, Bed, Wardrobe, Desk, Cabinet, Lighting
+- ✅ **Polish Locations** - Real Polish cities and voivodeships
+- ✅ **Tag-based Filtering** - Filter by furniture type
+- ✅ **Responsive Design** - Mobile-first approach
+- ✅ **High-Quality Images** - Unsplash furniture photos
+- ✅ **Save Functionality** - Bookmark items (UI ready)
+
+### Development Experience
+- ✅ **Hot Module Replacement** - Instant code updates
+- ✅ **Modular CSS** - Organized stylesheets
+- ✅ **TypeScript** - Full type safety
+- ✅ **Modern React** - React 19 features
+- ✅ **TanStack Query** - Server state management
+- ✅ **TanStack Router** - Type-safe routing
 
 ## 🔧 Environment Variables
 
 ### Backend (.env or Docker environment)
 ```bash
 # Database
-DB_HOST=localhost          # PostgreSQL host
+DB_HOST=postgres           # PostgreSQL host
 DB_PORT=5432              # PostgreSQL port
 DB_USER=postgres          # Database user
 DB_PASSWORD=password      # Database password
@@ -122,12 +146,12 @@ DB_NAME=auth_app          # Database name
 # Server
 PORT=8080                 # Server port
 JWT_SECRET=your-secret    # JWT signing key
-ENV=production            # Environment (production/development)
+ENV=development           # Environment (production/development)
 ```
 
 ### Frontend (.env)
 ```bash
-REACT_APP_API_URL=http://localhost:8080  # Backend API URL
+VITE_API_URL=http://localhost:8080  # Backend API URL
 ```
 
 ## 📚 API Documentation
@@ -151,6 +175,13 @@ REACT_APP_API_URL=http://localhost:8080  # Backend API URL
 }
 ```
 
+#### POST /api/auth/temporary
+```json
+{
+  "name": "Guest User"
+}
+```
+
 #### GET /api/profile
 ```bash
 Authorization: Bearer <jwt-token>
@@ -159,12 +190,13 @@ Authorization: Bearer <jwt-token>
 ## 🏗️ Architecture
 
 ### Frontend (React 19 + TypeScript)
-- **Vite** - Modern build tool with ES modules
+- **Vite** - Modern build tool with ES modules and HMR
 - **React 19** - Latest React features
 - **TypeScript 5.8** - Latest type system
 - **TanStack Router** - Type-safe routing
 - **TanStack Query** - Server state management
 - **Custom Hooks** - `useAuth`, `useApi`
+- **Modular CSS** - Organized stylesheets
 - **ES Modules** - Modern JavaScript modules
 
 ### Backend (Go)
@@ -180,18 +212,20 @@ Authorization: Bearer <jwt-token>
 - **PostgreSQL 15** - Database
 - **Nginx** - Production serving
 - **Docker Compose** - Orchestration
+- **HMR** - Hot Module Replacement for development
 
 ## 🔍 Code Quality Features
 
 ### Frontend
-- ✅ **Modern Build System** - Vite with ES modules
+- ✅ **Modern Build System** - Vite with ES modules and HMR
 - ✅ **Latest React 19** - Latest features and performance
 - ✅ **TypeScript 5.8** - Latest type system features
 - ✅ **Custom Hooks** - Extracted authentication logic
 - ✅ **Type Safety** - Full TypeScript coverage
 - ✅ **Component Separation** - No large monolithic components
-- ✅ **Reusable Components** - LoadingSpinner, etc.
-- ✅ **Clean Structure** - Organized by feature
+- ✅ **Modular CSS** - Organized stylesheets (base, auth, dashboard, etc.)
+- ✅ **Responsive Design** - Mobile-first approach
+- ✅ **Furniture Marketplace** - Polish location-based listings
 
 ### Backend
 - ✅ **Modular Architecture** - Separated concerns
@@ -199,13 +233,26 @@ Authorization: Bearer <jwt-token>
 - ✅ **Middleware Separation** - CORS logic isolated
 - ✅ **Utility Functions** - Response helpers centralized
 - ✅ **Model Definitions** - User model in separate file
+- ✅ **Guest User Support** - Temporary user accounts
 
 ## 🚀 Deployment
+
+### Development with HMR
+```bash
+# Start development environment
+./dev.sh
+
+# View logs
+docker-compose -f docker-compose.dev.yml logs -f
+
+# Stop development
+docker-compose -f docker-compose.dev.yml down
+```
 
 ### Production with Docker
 ```bash
 # Build and run production containers
-docker-compose up --build -d
+./prod.sh
 
 # View logs
 docker-compose logs -f
@@ -263,12 +310,19 @@ docker restart auth_postgres
 #### Docker Issues
 ```bash
 # Clean up Docker
+./clean.sh
+
+# Or manually:
 docker system prune -f
 docker volume prune -f
+docker-compose down -v
+```
 
-# Rebuild containers
-docker-compose down
-docker-compose up --build
+#### HMR Not Working
+```bash
+# Restart development environment
+docker-compose -f docker-compose.dev.yml down
+docker-compose -f docker-compose.dev.yml up --build
 ```
 
 #### Node Modules Issues
@@ -290,6 +344,8 @@ npm install
 - Keep components **small and focused**
 - Use **TanStack Query** for server state
 - Follow **React 19** best practices
+- Use **modular CSS** for styling
+- Implement **mobile-first** design
 
 ### Backend
 - Use **standard Go libraries** only
@@ -332,4 +388,4 @@ If you encounter any issues:
 3. **Ensure all prerequisites** are installed
 4. **Try the clean setup** commands
 
-For AI agents: This project uses modern TypeScript/React patterns with TanStack Query and Router, Vite build system, and a Go backend using only standard libraries. All dependencies are compatible with ES modules.
+For AI agents: This project is a furniture marketplace with Polish locations, using modern TypeScript/React patterns with TanStack Query and Router, Vite build system with HMR, and a Go backend using only standard libraries. All dependencies are compatible with ES modules.
