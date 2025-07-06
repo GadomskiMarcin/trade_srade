@@ -138,6 +138,9 @@ const Signup: React.FC<SignupProps> = ({ onSignup }) => {
             Already have an account?{' '}
             <Link to="/login">Sign in</Link>
           </p>
+          <p>
+            <Link to="/dashboard" className="back-link">← Back to Dashboard</Link>
+          </p>
         </div>
       </div>
     </div>

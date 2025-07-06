@@ -7,12 +7,15 @@ import (
 )
 
 type Furniture struct {
-	ID       int      `json:"id"`
-	Title    string   `json:"title"`
-	URL      string   `json:"url"`
-	Tags     []string `json:"tags"`
-	Seller   string   `json:"seller"`
-	Location string   `json:"location"`
+	ID        int      `json:"id"`
+	Title     string   `json:"title"`
+	URL       string   `json:"url"`
+	Tags      []string `json:"tags"`
+	Seller    string   `json:"seller"`
+	Location  string   `json:"location"`
+	OfferType string   `json:"offerType"`
+	Latitude  *float64 `json:"latitude,omitempty"`
+	Longitude *float64 `json:"longitude,omitempty"`
 }
 
 type FurnitureResponse struct {
@@ -26,12 +29,13 @@ func furnitureHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Get tags from query parameters
+	// Get tags and offer type from query parameters
 	tags := r.URL.Query()["tags"]
+	offerType := r.URL.Query().Get("offerType")
 	
 	// Build the query
 	query := `
-		SELECT id, title, url, tags, seller, location 
+		SELECT id, title, url, tags, seller, location, offer_type, latitude, longitude
 		FROM furniture 
 		WHERE 1=1
 	`
@@ -53,6 +57,13 @@ func furnitureHandler(w http.ResponseWriter, r *http.Request) {
 		query += fmt.Sprintf(" AND tags && ARRAY[%s]", strings.Join(placeholders, ","))
 	}
 	
+	// Add offer type filtering if provided
+	if offerType != "" {
+		query += fmt.Sprintf(" AND offer_type = $%d", argIndex)
+		args = append(args, offerType)
+		argIndex++
+	}
+	
 	query += " ORDER BY id"
 	
 	// Execute the query
@@ -67,7 +78,8 @@ func furnitureHandler(w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 		var item Furniture
 		var tagsStr string
-		err := rows.Scan(&item.ID, &item.Title, &item.URL, &tagsStr, &item.Seller, &item.Location)
+		var lat, lng *float64
+		err := rows.Scan(&item.ID, &item.Title, &item.URL, &tagsStr, &item.Seller, &item.Location, &item.OfferType, &lat, &lng)
 		if err != nil {
 			respondWithError(w, "Error scanning furniture data", http.StatusInternalServerError)
 			return
@@ -75,6 +87,15 @@ func furnitureHandler(w http.ResponseWriter, r *http.Request) {
 		
 		// Parse tags string to array
 		item.Tags = parseTags(tagsStr)
+		
+		// Set coordinates if they exist
+		if lat != nil {
+			item.Latitude = lat
+		}
+		if lng != nil {
+			item.Longitude = lng
+		}
+		
 		furniture = append(furniture, item)
 	}
 	

@@ -135,6 +135,9 @@ const Login: React.FC<LoginProps> = ({ onLogin, onTemporaryUser }) => {
                 Don&apos;t have an account?{' '}
                 <Link to="/signup">Create one</Link>
               </p>
+              <p>
+                <Link to="/dashboard" className="back-link">← Back to Dashboard</Link>
+              </p>
             </div>
           </>
         ) : (
@@ -184,6 +187,9 @@ const Login: React.FC<LoginProps> = ({ onLogin, onTemporaryUser }) => {
               <p>
                 Don&apos;t have an account?{' '}
                 <Link to="/signup">Create one</Link>
+              </p>
+              <p>
+                <Link to="/dashboard" className="back-link">← Back to Dashboard</Link>
               </p>
             </div>
           </>

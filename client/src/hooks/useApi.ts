@@ -24,10 +24,13 @@ const api = {
     return response.data.user;
   },
   
-  getFurniture: async (tags?: string[]): Promise<{ furniture: Furniture[]; total: number }> => {
+  getFurniture: async (tags?: string[], offerType?: string): Promise<{ furniture: Furniture[]; total: number }> => {
     const params = new URLSearchParams();
     if (tags && tags.length > 0) {
       tags.forEach(tag => params.append('tags', tag));
+    }
+    if (offerType) {
+      params.append('offerType', offerType);
     }
     const response = await axios.get(`/api/furniture?${params.toString()}`);
     return response.data;
@@ -64,10 +67,11 @@ export const useProfile = (enabled: boolean = true) => {
   });
 };
 
-export const useFurniture = (tags?: string[]) => {
+export const useFurniture = (tags?: string[], offerType?: string) => {
   return useQuery<{ furniture: Furniture[]; total: number }>({
-    queryKey: ['furniture', tags],
-    queryFn: () => api.getFurniture(tags),
+    queryKey: ['furniture', tags, offerType],
+    queryFn: () => api.getFurniture(tags, offerType),
     staleTime: 1000 * 60 * 5, // 5 minutes
+    placeholderData: (previousData) => previousData, // Keep previous data while new data is loading
   });
 }; 

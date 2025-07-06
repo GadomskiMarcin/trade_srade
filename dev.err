@@ -897,3 +897,96 @@ auth_postgres  | 2025-07-05 17:49:20.827 UTC [55] LOG:  shutting down
 auth_postgres  | 2025-07-05 17:49:20.843 UTC [55] LOG:  checkpoint starting: shutdown immediate
 auth_postgres  | 2025-07-05 17:49:21.027 UTC [55] LOG:  checkpoint complete: wrote 99 buffers (0.6%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.045 s, sync=0.059 s, total=0.200 s; sync files=58, longest=0.015 s, average=0.002 s; distance=386 kB, estimate=386 kB
 auth_postgres  | 2025-07-05 17:49:21.043 UTC [1] LOG:  database system is shut down
+time="2025-07-05T19:56:01+02:00" level=warning msg="/home/marcin/Pulpit/chujemuje/docker-compose.dev.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+ Service backend  Building
+time="2025-07-05T19:56:07+02:00" level=warning msg="/home/marcin/Pulpit/chujemuje/docker-compose.dev.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+ Service backend  Building
+ Service backend  Built
+ Service backend  Built
+ Network chujemuje_auth_network  Creating
+ Network chujemuje_auth_network  Creating
+ Network chujemuje_auth_network  Created
+ Network chujemuje_auth_network  Error
+ Volume "chujemuje_postgres_data"  Creating
+network chujemuje_auth_network was found but has incorrect label com.docker.compose.network set to "auth_network" (expected: "")
+ Volume "chujemuje_postgres_data"  Created
+
+[0;31m[ERROR] Something went wrong. Check the logs for details: ./dev.log, ./dev.err[0m
+ Container auth_postgres  Creating
+ Container auth_postgres  Created
+ Container auth_backend  Creating
+ Container auth_backend  Created
+ Container auth_frontend  Creating
+ Container auth_frontend  Created
+auth_postgres  | sh: locale: not found
+auth_postgres  | 2025-07-05 17:57:14.347 UTC [34] WARNING:  no usable system locales were found
+auth_postgres  | initdb: warning: enabling "trust" authentication for local connections
+auth_postgres  | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+auth_postgres  | 2025-07-05 17:57:17.664 UTC [1] LOG:  starting PostgreSQL 15.13 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+auth_postgres  | 2025-07-05 17:57:17.665 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+auth_postgres  | 2025-07-05 17:57:17.665 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+auth_postgres  | 2025-07-05 17:57:17.700 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+auth_postgres  | 2025-07-05 17:57:17.772 UTC [56] LOG:  database system was shut down at 2025-07-05 17:57:17 UTC
+auth_postgres  | 2025-07-05 17:57:17.822 UTC [1] LOG:  database system is ready to accept connections
+auth_backend   | 2025/07/05 17:57:23 Sample furniture data inserted successfully
+auth_backend   | 2025/07/05 17:57:23 Database initialized successfully
+auth_backend   | 2025/07/05 17:57:23 Server starting on port 8080
+auth_frontend  | npm notice
+auth_frontend  | npm notice New major version of npm available! 10.8.2 -> 11.4.2
+auth_frontend  | npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.2
+auth_frontend  | npm notice To update run: npm install -g npm@11.4.2
+auth_frontend  | npm notice
+
+[0;31m[ERROR] Something went wrong. Check the logs for details: ./dev.log, ./dev.err[0m
+time="2025-07-05T20:00:29+02:00" level=warning msg="/home/marcin/Pulpit/chujemuje/docker-compose.dev.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+ Service backend  Building
+ Service backend  Built
+ Container auth_postgres  Running
+ Container auth_frontend  Stopping
+ Container auth_frontend  Stopped
+ Container auth_backend  Recreate
+ Container auth_backend  Recreated
+ Container auth_frontend  Created
+auth_backend   | 2025/07/05 18:01:11 Database initialized successfully
+auth_backend   | 2025/07/05 18:01:11 Server starting on port 8080
+auth_postgres  | 2025-07-05 18:02:17.793 UTC [54] LOG:  checkpoint starting: time
+auth_postgres  | 2025-07-05 18:02:27.176 UTC [54] LOG:  checkpoint complete: wrote 95 buffers (0.6%); 0 WAL file(s) added, 0 removed, 0 recycled; write=9.310 s, sync=0.036 s, total=9.384 s; sync files=59, longest=0.012 s, average=0.001 s; distance=392 kB, estimate=392 kB
+Gracefully stopping... (press Ctrl+C again to force)
+unexpected EOF
+
+[0;31m[ERROR] Something went wrong. Check the logs for details: ./dev.log, ./dev.err[0m
+time="2025-07-06T19:53:11+02:00" level=warning msg="/home/marcin/Pulpit/chujemuje/docker-compose.dev.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+ Service backend  Building
+ Service backend  Built
+ Network chujemuje_auth_network  Creating
+ Network chujemuje_auth_network  Created
+ Volume "chujemuje_postgres_data"  Creating
+ Volume "chujemuje_postgres_data"  Created
+ Container auth_postgres  Creating
+ Container auth_postgres  Created
+ Container auth_backend  Creating
+ Container auth_backend  Created
+ Container auth_frontend  Creating
+ Container auth_frontend  Created
+auth_postgres  | sh: locale: not found
+auth_postgres  | 2025-07-06 17:53:56.975 UTC [37] WARNING:  no usable system locales were found
+auth_postgres  | initdb: warning: enabling "trust" authentication for local connections
+auth_postgres  | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+auth_postgres  | 2025-07-06 17:53:58.446 UTC [1] LOG:  starting PostgreSQL 15.13 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+auth_postgres  | 2025-07-06 17:53:58.447 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+auth_postgres  | 2025-07-06 17:53:58.447 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+auth_postgres  | 2025-07-06 17:53:58.484 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+auth_postgres  | 2025-07-06 17:53:58.512 UTC [59] LOG:  database system was shut down at 2025-07-06 17:53:58 UTC
+auth_postgres  | 2025-07-06 17:53:58.533 UTC [1] LOG:  database system is ready to accept connections
+auth_backend   | 2025/07/06 17:54:06 Sample furniture data inserted successfully
+auth_backend   | 2025/07/06 17:54:06 Database initialized successfully
+auth_backend   | 2025/07/06 17:54:06 Server starting on port 8080
+auth_frontend  | npm notice
+auth_frontend  | npm notice New major version of npm available! 10.8.2 -> 11.4.2
+auth_frontend  | npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.2
+auth_frontend  | npm notice To update run: npm install -g npm@11.4.2
+auth_frontend  | npm notice
+auth_postgres  | 2025-07-06 17:58:58.573 UTC [57] LOG:  checkpoint starting: time
+auth_postgres  | 2025-07-06 17:59:07.961 UTC [57] LOG:  checkpoint complete: wrote 95 buffers (0.6%); 0 WAL file(s) added, 0 removed, 0 recycled; write=9.316 s, sync=0.022 s, total=9.388 s; sync files=58, longest=0.011 s, average=0.001 s; distance=352 kB, estimate=352 kB
+
+[0;31m[ERROR] Something went wrong. Check the logs for details: ./dev.log, ./dev.err[0m

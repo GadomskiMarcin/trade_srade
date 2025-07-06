@@ -6,9 +6,9 @@ services:
     image: postgres:15-alpine
     container_name: auth_postgres
     environment:
-      POSTGRES_DB: auth_app
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ${DB_NAME:-auth_app}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -31,14 +31,14 @@ services:
     environment:
       - DB_HOST=postgres
       - DB_PORT=5432
-      - DB_USER=postgres
-      - DB_PASSWORD=password
-      - DB_NAME=auth_app
-      - JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
-      - PORT=8080
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-password}
+      - DB_NAME=${DB_NAME:-auth_app}
+      - JWT_SECRET=${JWT_SECRET}
+      - PORT=${PORT:-8080}
       - ENV=development
     ports:
-      - "8080:8080"
+      - "${PORT:-8080}:8080"
     depends_on:
       postgres:
         condition: service_healthy
@@ -60,6 +60,8 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
+      - VITE_API_URL=${VITE_API_URL:-http://localhost:8080}
+      - VITE_ENV=development
     depends_on:
       - backend
     networks:

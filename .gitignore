@@ -125,4 +125,5 @@ client/.env.production.local
 
 *.log
 *.err
+dev.err
 

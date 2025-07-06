@@ -13,6 +13,9 @@ export interface Furniture {
   tags: string[];
   seller: string;
   location: string;
+  offerType: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface SignupRequest {

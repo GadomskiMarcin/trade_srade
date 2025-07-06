@@ -46,9 +46,9 @@ cd ..
 
 echo "✅ Dependencies installed successfully"
 
-# Create .env file if it doesn't exist
+# Create backend .env file if it doesn't exist
 if [ ! -f .env ]; then
-    echo "📝 Creating .env file..."
+    echo "📝 Creating backend .env file..."
     cat > .env << EOF
 # Database Configuration
 DB_HOST=localhost
@@ -60,9 +60,26 @@ DB_NAME=auth_app
 # Server Configuration
 PORT=8080
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+
+# Environment
 ENV=development
 EOF
-    echo "✅ .env file created"
+    echo "✅ Backend .env file created"
+fi
+
+# Create frontend .env file if it doesn't exist
+if [ ! -f client/.env ]; then
+    echo "📝 Creating frontend .env file..."
+    cat > client/.env << EOF
+# Frontend Environment Variables
+
+# API Configuration
+VITE_API_URL=http://localhost:8080
+
+# Environment
+VITE_ENV=development
+EOF
+    echo "✅ Frontend .env file created"
 fi
 
 echo ""

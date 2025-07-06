@@ -9,6 +9,19 @@ A modern full-stack furniture marketplace application with **React 19 + TypeScri
 - **Go 1.22+** (for local development)
 - **Node.js 20+** (for local development)
 
+### Environment Setup
+
+The application requires environment variables to be properly configured. The setup script will create the necessary files:
+
+```bash
+# Run the setup script to create environment files
+./setup.sh
+```
+
+This will create:
+- `.env` - Backend environment variables
+- `client/.env` - Frontend environment variables
+
 ### Development with HMR (Recommended)
 ```bash
 # Start development environment with Hot Module Replacement
@@ -42,10 +55,13 @@ docker-compose up --build
 │   │   ├── hooks/         # Custom hooks (useAuth, useApi)
 │   │   ├── types/         # TypeScript definitions
 │   │   ├── styles/        # Modular CSS files
+│   │   ├── config.ts      # Environment configuration
 │   │   └── App.tsx        # Main app with routing
 │   ├── package.json       # Frontend dependencies
 │   ├── tsconfig.json      # TypeScript config
 │   ├── vite.config.ts     # Vite configuration with HMR
+│   ├── .env               # Frontend environment variables
+│   ├── env.example        # Frontend environment example
 │   └── index.html         # Entry HTML
 ├── server/                 # Go backend
 │   ├── handlers/          # HTTP handlers (auth, profile)
@@ -53,13 +69,18 @@ docker-compose up --build
 │   ├── models/            # Data models
 │   ├── utils/             # Response utilities
 │   ├── main.go            # Server entry point
-│   └── go.mod             # Go dependencies
+│   ├── go.mod             # Go dependencies
+│   ├── .env               # Backend environment variables
+│   └── env.example        # Backend environment example
 ├── docker-compose.yml      # Production setup
 ├── docker-compose.dev.yml  # Development setup with HMR
 ├── Dockerfile.backend      # Backend container
+├── Dockerfile.frontend     # Frontend container
 ├── dev.sh                  # Development startup script
 ├── prod.sh                 # Production startup script
 ├── clean.sh                # Cleanup script
+├── setup.sh                # Setup script
+├── .env                    # Root environment variables
 └── package.json           # Root scripts
 ```
 
@@ -67,6 +88,7 @@ docker-compose up --build
 
 ### Quick Scripts
 ```bash
+./setup.sh                  # Initial setup with environment files
 ./dev.sh                    # Start development with HMR
 ./prod.sh                   # Start production
 ./clean.sh                  # Clean up everything
@@ -134,25 +156,47 @@ docker run --name auth_postgres -e POSTGRES_DB=auth_app -e POSTGRES_USER=postgre
 
 ## 🔧 Environment Variables
 
-### Backend (.env or Docker environment)
+### Backend (.env)
 ```bash
-# Database
-DB_HOST=postgres           # PostgreSQL host
+# Database Configuration
+DB_HOST=localhost          # PostgreSQL host
 DB_PORT=5432              # PostgreSQL port
 DB_USER=postgres          # Database user
 DB_PASSWORD=password      # Database password
 DB_NAME=auth_app          # Database name
 
-# Server
+# Server Configuration
 PORT=8080                 # Server port
-JWT_SECRET=your-secret    # JWT signing key
+JWT_SECRET=your-secret    # JWT signing key (REQUIRED)
 ENV=development           # Environment (production/development)
 ```
 
-### Frontend (.env)
+### Frontend (client/.env)
 ```bash
-VITE_API_URL=http://localhost:8080  # Backend API URL
+# API Configuration
+VITE_API_URL=http://localhost:8080  # Backend API URL (REQUIRED)
+
+# Environment
+VITE_ENV=development      # Environment (development/production)
 ```
+
+### Environment Variable Validation
+
+The application will **fail to start** if required environment variables are missing:
+
+**Backend Required Variables:**
+- `DB_HOST` - Database host
+- `DB_PORT` - Database port
+- `DB_USER` - Database user
+- `DB_PASSWORD` - Database password
+- `DB_NAME` - Database name
+- `PORT` - Server port
+- `JWT_SECRET` - JWT signing key
+
+**Frontend Required Variables:**
+- `VITE_API_URL` - Backend API URL
+
+If any required variable is missing, the application will display a clear error message and exit gracefully.
 
 ## 📚 API Documentation
 
@@ -198,6 +242,7 @@ Authorization: Bearer <jwt-token>
 - **Custom Hooks** - `useAuth`, `useApi`
 - **Modular CSS** - Organized stylesheets
 - **ES Modules** - Modern JavaScript modules
+- **Environment Configuration** - Proper env var handling
 
 ### Backend (Go)
 - **Go 1.22** - Latest stable version
@@ -206,6 +251,7 @@ Authorization: Bearer <jwt-token>
 - **JWT** - Authentication with `golang-jwt`
 - **bcrypt** - Password hashing
 - **Modular Structure** - Handlers, middleware, utils
+- **Environment Validation** - Proper env var validation
 
 ### Infrastructure
 - **Docker** - Containerization
@@ -226,6 +272,7 @@ Authorization: Bearer <jwt-token>
 - ✅ **Modular CSS** - Organized stylesheets (base, auth, dashboard, etc.)
 - ✅ **Responsive Design** - Mobile-first approach
 - ✅ **Furniture Marketplace** - Polish location-based listings
+- ✅ **Environment Validation** - Proper env var handling with error messages
 
 ### Backend
 - ✅ **Modular Architecture** - Separated concerns
@@ -234,6 +281,7 @@ Authorization: Bearer <jwt-token>
 - ✅ **Utility Functions** - Response helpers centralized
 - ✅ **Model Definitions** - User model in separate file
 - ✅ **Guest User Support** - Temporary user accounts
+- ✅ **Environment Validation** - Proper env var validation with clear errors
 
 ## 🚀 Deployment
 
@@ -263,9 +311,10 @@ docker-compose down
 
 ### Environment Variables for Production
 ```bash
-# Create .env file
+# Create .env file with secure values
 JWT_SECRET=your-super-secret-production-key
 DB_PASSWORD=your-secure-database-password
+VITE_API_URL=https://your-api-domain.com
 ```
 
 ## 🧪 Testing
@@ -288,6 +337,15 @@ go test -cover ./...       # Coverage report
 ## 🔧 Troubleshooting
 
 ### Common Issues
+
+#### Environment Variables Missing
+```bash
+# Check if .env files exist
+ls -la .env client/.env
+
+# If missing, run setup
+./setup.sh
+```
 
 #### Port Already in Use
 ```bash
@@ -314,7 +372,6 @@ docker restart auth_postgres
 
 # Or manually:
 docker system prune -f
-docker volume prune -f
 docker-compose down -v
 ```
 
@@ -346,6 +403,7 @@ npm install
 - Follow **React 19** best practices
 - Use **modular CSS** for styling
 - Implement **mobile-first** design
+- Always validate **environment variables**
 
 ### Backend
 - Use **standard Go libraries** only
@@ -353,6 +411,7 @@ npm install
 - Keep handlers **small and focused**
 - Use **proper error handling**
 - Write **clear documentation**
+- Always validate **environment variables**
 
 ### Git Workflow
 ```bash
@@ -363,29 +422,25 @@ git checkout -b feature/new-feature
 git add .
 git commit -m "feat: add new feature"
 
-# Push and create PR
+# Push and create pull request
 git push origin feature/new-feature
 ```
 
-## 🤝 Contributing
+## 🔒 Security Considerations
 
-1. **Fork the repository**
-2. **Create a feature branch** (`git checkout -b feature/amazing-feature`)
-3. **Commit your changes** (`git commit -m 'feat: add amazing feature'`)
-4. **Push to the branch** (`git push origin feature/amazing-feature`)
-5. **Open a Pull Request**
+### Environment Variables
+- **Never commit** `.env` files to version control
+- Use **strong JWT secrets** in production
+- Use **secure database passwords**
+- Validate all **required environment variables**
+
+### Production Deployment
+- Use **HTTPS** for all production traffic
+- Set **secure JWT secrets**
+- Use **strong database passwords**
+- Configure **proper CORS settings**
+- Enable **security headers**
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
-
-If you encounter any issues:
-
-1. **Check the troubleshooting section** above
-2. **Review the logs** with `docker-compose logs`
-3. **Ensure all prerequisites** are installed
-4. **Try the clean setup** commands
-
-For AI agents: This project is a furniture marketplace with Polish locations, using modern TypeScript/React patterns with TanStack Query and Router, Vite build system with HMR, and a Go backend using only standard libraries. All dependencies are compatible with ES modules.
+This project is licensed under the MIT License - see the LICENSE file for details.

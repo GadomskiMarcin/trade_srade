@@ -11,10 +11,11 @@ import LoadingSpinner from './components/LoadingSpinner';
 import { useAuth } from './hooks/useAuth';
 import { useLogin, useSignup, useTemporaryUser, useProfile } from './hooks/useApi';
 import { AuthResponse } from './types/api';
+import { config } from './config';
 import './styles/base.css';
 
-// Set default axios base URL
-axios.defaults.baseURL = 'http://localhost:8080';
+// Set axios base URL from configuration
+axios.defaults.baseURL = config.apiUrl;
 
 // Create routes
 const rootRoute = createRootRoute({
@@ -69,18 +70,14 @@ function RootComponent(): React.JSX.Element {
   );
 }
 
-// Index component - redirects based on auth status
+// Index component - redirects to dashboard (guest or logged in)
 function IndexComponent(): null {
   const navigate = useNavigate();
-  const token = localStorage.getItem('token');
 
   React.useEffect(() => {
-    if (token) {
-      navigate({ to: '/dashboard' });
-    } else {
-      navigate({ to: '/login' });
-    }
-  }, [token, navigate]);
+    // Always go to dashboard, regardless of auth status
+    navigate({ to: '/dashboard' });
+  }, [navigate]);
 
   return null;
 }
@@ -147,31 +144,30 @@ function SignupComponent(): React.JSX.Element {
   return <Signup onSignup={signupMutation} />;
 }
 
-// Dashboard component with TanStack Query
-function DashboardComponent(): React.JSX.Element | null {
+// Dashboard component with TanStack Query - now accessible to guests
+function DashboardComponent(): React.JSX.Element {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, isGuest } = useAuth();
   const token = localStorage.getItem('token');
   const { data: user, isLoading, error } = useProfile(!!token);
 
+  // If user is logged in but profile fetch fails, clear token and stay in guest mode
   React.useEffect(() => {
-    if (!token) {
-      navigate({ to: '/login' });
+    if (token && error) {
+      localStorage.removeItem('token');
+      delete axios.defaults.headers.common['Authorization'];
     }
-  }, [token, navigate]);
+  }, [token, error]);
 
-  if (!token) return null;
-  if (isLoading) return <LoadingSpinner message="Loading dashboard..." />;
-  if (error) {
-    localStorage.removeItem('token');
-    navigate({ to: '/login' });
-    return null;
+  // Show loading only if we're trying to fetch user data
+  if (token && isLoading) {
+    return <LoadingSpinner message="Loading dashboard..." />;
   }
 
-  return user ? <Dashboard user={user} onLogout={logout} /> : null;
+  return <Dashboard user={user} onLogout={logout} isGuest={isGuest} />;
 }
 
-// Profile component with TanStack Query
+// Profile component with TanStack Query - requires authentication
 function ProfileComponent(): React.JSX.Element | null {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
@@ -179,7 +175,7 @@ function ProfileComponent(): React.JSX.Element | null {
 
   React.useEffect(() => {
     if (!token) {
-      navigate({ to: '/login' });
+      navigate({ to: '/dashboard' });
     }
   }, [token, navigate]);
 
@@ -187,7 +183,7 @@ function ProfileComponent(): React.JSX.Element | null {
   if (isLoading) return <LoadingSpinner message="Loading profile..." />;
   if (error) {
     localStorage.removeItem('token');
-    navigate({ to: '/login' });
+    navigate({ to: '/dashboard' });
     return null;
   }
 

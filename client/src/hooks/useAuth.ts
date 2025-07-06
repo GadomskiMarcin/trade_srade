@@ -6,6 +6,7 @@ import { User } from '../types/api';
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isGuest, setIsGuest] = useState<boolean>(true);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -15,6 +16,8 @@ export const useAuth = () => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       fetchProfile();
     } else {
+      // No token means guest mode
+      setIsGuest(true);
       setLoading(false);
     }
   }, []);
@@ -23,10 +26,12 @@ export const useAuth = () => {
     try {
       const response = await axios.get<{ user: User }>('/api/profile');
       setUser(response.data.user);
+      setIsGuest(false);
     } catch (error) {
       console.warn('Failed to fetch profile:', error);
       localStorage.removeItem('token');
       delete axios.defaults.headers.common['Authorization'];
+      setIsGuest(true);
     } finally {
       setLoading(false);
     }
@@ -34,6 +39,7 @@ export const useAuth = () => {
 
   const login = (userData: User, token: string): void => {
     setUser(userData);
+    setIsGuest(false);
     localStorage.setItem('token', token);
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     queryClient.invalidateQueries({ queryKey: ['user'] });
@@ -41,6 +47,15 @@ export const useAuth = () => {
 
   const logout = (): void => {
     setUser(null);
+    setIsGuest(true);
+    localStorage.removeItem('token');
+    delete axios.defaults.headers.common['Authorization'];
+    queryClient.clear();
+  };
+
+  const enterGuestMode = (): void => {
+    setUser(null);
+    setIsGuest(true);
     localStorage.removeItem('token');
     delete axios.defaults.headers.common['Authorization'];
     queryClient.clear();
@@ -49,8 +64,10 @@ export const useAuth = () => {
   return {
     user,
     loading,
+    isGuest,
     login,
     logout,
+    enterGuestMode,
     fetchProfile
   };
 }; 
